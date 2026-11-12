@@ -1,6 +1,6 @@
 https://ediprism.github.io/
-https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html
-https://ediprism.github.io/x12-837-clm02-service-line-balancing.html
-https://ediprism.github.io/x12-835-bpr02-clp04-plb-balancing.html
 https://ediprism.github.io/fix-x12-isa-106-characters.html
 https://ediprism.github.io/hipaa-scrub-837-835-test-fixtures.html
+https://ediprism.github.io/x12-835-bpr02-clp04-plb-balancing.html
+https://ediprism.github.io/x12-837-clm02-service-line-balancing.html
+https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html
