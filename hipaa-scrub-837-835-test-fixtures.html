@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline HIPAA Scrubber for X12 837 &amp; 835 Unit-Test Fixtures (80840 NPI Safe) — EdiPrism</title>
+  <meta name="description" content="How to deterministically anonymize ASC X12 837 and 835 EDI files offline for Git unit tests and AI coding assistants while preserving field widths, cross-file IDs, Safe Harbor >89 birth dates, and 80840 ISO Luhn NPI check digits.">
+  <link rel="canonical" href="https://ediprism.github.io/hipaa-scrub-837-835-test-fixtures.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
+      <nav class="nav-links">
+        <a href="/">Overview</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
+        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
+        <a href="/fix-x12-isa-106-characters.html">106-Byte ISA Fix</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Get on JetBrains Marketplace</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">HIPAA Safe Harbor &bull; 45 CFR &sect; 164.514(b)(2)</span>
+    <h1>Deterministic Offline HIPAA Scrubbing for <code>837</code> &amp; <code>835</code> Test Fixtures</h1>
+    <p class="lead">
+      Naive find-and-replace on production <code>837</code>/<code>835</code> files breaks <code>80840</code> NPI check digits, destroys <code>CLM-01 &harr; CLP-01</code> reconciliation links, and leaves Safe Harbor age <code>&gt; 89</code> dates exposed.
+    </p>
+
+    <h2>Segments &amp; Identifiers Protected by EdiPrism's Local Scrubber</h2>
+    <table>
+      <thead>
+        <tr><th>Segment / Element</th><th>PHI / PII Risk</th><th>Deterministic Offline Transformation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>NM1-03..05</code></td><td>Patient / Subscriber / Provider Names</td><td>Width-matched synthetic names seeded via keyed local <code>HmacSHA256</code>.</td></tr>
+        <tr><td><code>NM1-09</code> (<code>NM1-08 == XX</code>)</td><td>10-Digit Healthcare NPI</td><td>Synthetic 10-digit identifier recalculated with valid US CMS <code>80840</code> ISO Luhn check digit.</td></tr>
+        <tr><td><code>NM1-09</code> (<code>MI</code> / Member ID)</td><td>Subscriber / Member ID</td><td>Shape- and width-preserving deterministic token (identical across <code>837</code> and <code>835</code>).</td></tr>
+        <tr><td><code>N3-01..02</code> &amp; <code>N4-01..03</code></td><td>Street Address, City &amp; ZIP</td><td>Synthetic street line + Safe Harbor zeroed ZIP (<code>00000</code>).</td></tr>
+        <tr><td><code>DMG-02</code></td><td>Date of Birth (<code>CCYYMMDD</code>)</td><td>Month/day masked to <code>0101</code>; ages <code>&gt; 89</code> clamped to <code>19000101</code>.</td></tr>
+        <tr><td><code>PER-04 / 06 / 08</code> &amp; <code>REF-02</code></td><td>Phone, Email, SSN/EIN/Medicaid Refs</td><td>RFC-2606 <code>.invalid</code> emails, <code>555-01xx</code> phone numbers, and Luhn-safe masked IDs.</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cta-box">
+      <h3>Turn Production EDI Bugs into Safe Git Unit Tests in Seconds</h3>
+      <p>Scrub entire interchanges in-place (<code>Ctrl+Z</code> undoable) — 100% locally inside IntelliJ IDEA, PyCharm, DataGrip, and Rider with zero network sockets.</p>
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install EdiPrism on JetBrains Marketplace &rarr;</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+  </footer>
+</body>
+</html>

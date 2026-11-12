@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASC X12 999 &amp; 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism</title>
+  <meta name="description" content="Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837/834/850 files.">
+  <link rel="canonical" href="https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
+      <nav class="nav-links">
+        <a href="/">Overview</a>
+        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
+        <a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA Guide</a>
+        <a href="/fix-x12-isa-106-characters.html">106-Byte ISA Fix</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open in JetBrains IDE</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">Interactive X12 Reference &bull; 100% Client-Side</span>
+    <h1>ASC X12 <code>999</code> &amp; <code>997</code> Error Code Lookup (<code>IK3</code>, <code>IK4</code>, <code>IK5</code>, <code>AK9</code>)</h1>
+    <p class="lead">
+      Filter any <code>IK3-04</code> segment error code, <code>IK4-03</code> element error code, or <code>IK5</code>/<code>AK9</code> acknowledgment status below — plus learn how <code>IK3-02</code> <code>ST</code>-relative segment positions map back to your outbound <code>837</code>, <code>834</code>, <code>270</code>, or <code>850</code> file.
+    </p>
+
+    <input id="codeSearch" class="search-box" type="search" placeholder="Filter by segment/element or code (e.g. IK3, IK4, I10, I12, 8, R, E)..." oninput="filterCodes()">
+
+    <table id="codeTable">
+      <thead>
+        <tr>
+          <th>Coordinate</th>
+          <th>Code</th>
+          <th>Meaning (Clean-Room CMS 5010 Summary)</th>
+          <th>Typical Root Cause in <code>837</code> / <code>834</code> / <code>850</code></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>A</code></td><td>Accepted</td><td>Transaction / functional group passed syntax &amp; implementation rules.</td></tr>
+        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>E</code></td><td>Accepted, But Errors Were Noted</td><td>Non-fatal situational warning; review <code>IK3</code>/<code>IK4</code> details.</td></tr>
+        <tr><td><code>AK9-01</code></td><td><code>P</code></td><td>Partially Accepted</td><td>At least one <code>ST</code> transaction rejected while sibling <code>ST</code> sets passed.</td></tr>
+        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>R</code></td><td>Rejected</td><td>Fatal syntax or implementation error; inspect all <code>IK3</code>/<code>IK4</code> segments.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>1</code></td><td>Unrecognized segment ID</td><td>Corrupted segment tag or unescaped delimiter inside free-form text.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>2</code></td><td>Unexpected segment</td><td>Segment placed in wrong loop or missing preceding trigger segment.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>3</code></td><td>Required segment missing</td><td>Mandatory loop header/child (e.g. <code>SBR</code>, <code>NM1</code>, <code>SV1</code>) omitted.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>4</code></td><td>Loop occurs over maximum times</td><td>Exceeded max repeat count for loop in companion guide.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>5</code></td><td>Segment exceeds maximum use</td><td>Duplicate singleton segment inside same loop iteration.</td></tr>
+        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>8</code></td><td>Segment has data element errors</td><td>Look immediately at child <code>IK4</code> segment(s) for exact offending field.</td></tr>
+        <tr><td><code>IK3-04</code></td><td><code>I4</code></td><td>Implementation 'Not Used' segment present</td><td>Sent a base X12 segment prohibited by the 5010 companion guide.</td></tr>
+        <tr><td><code>IK3-04</code></td><td><code>I6</code></td><td>Implementation situational segment missing</td><td>Situational rule triggered (check <code>CTX</code> Situational Trigger segment).</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>1</code></td><td>Required data element missing</td><td>Empty mandatory element between <code>*</code> separators.</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>2</code></td><td>Conditional required data element missing</td><td>Paired qualifier present without corresponding value (e.g. <code>NM1-08</code> without <code>NM1-09</code>).</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>3</code></td><td>Too many data elements</td><td>Extra trailing <code>*</code> or unescaped element separator in name/address.</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>4</code></td><td>Data element too short</td><td>Value shorter than minimum AN/ID/N length (e.g. 4-digit ZIP or truncated NPI).</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>5</code></td><td>Data element too long</td><td>Street line (<code>N3</code>) &gt; 55 chars or control number &gt; max length.</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>6</code></td><td>Invalid character in data element</td><td>Non-basic X12 punctuation or control byte inside identifier.</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>7</code></td><td>Invalid code value</td><td>Unrecognized qualifier in <code>NM1-01</code>, <code>REF-01</code>, <code>CLM-05-2</code>, etc.</td></tr>
+        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>8</code></td><td>Invalid date</td><td>Non-calendar date in <code>D8</code> (<code>CCYYMMDD</code>) field such as <code>20260230</code>.</td></tr>
+        <tr><td><code>IK4-03</code></td><td><code>I6</code></td><td>Code value not used in implementation</td><td>Valid base X12 qualifier not permitted in this 5010 loop.</td></tr>
+        <tr><td><code>IK4-03</code></td><td><code>I9</code></td><td>Implementation dependent data element missing</td><td>Situational element required by payer/CMS rule.</td></tr>
+        <tr><td><code>IK4-03</code></td><td><code>I10</code></td><td>Implementation 'Not Used' data element present</td><td>Populated an element marked Not Used in the 5010 guide.</td></tr>
+        <tr><td><code>IK4-03</code></td><td><code>I12</code></td><td>Implementation pattern match failure</td><td>Failed regex/NPI/ZIP/monetary format rule (see <code>IK4-04</code> rejected copy).</td></tr>
+      </tbody>
+    </table>
+
+    <h2>How <code>IK3-02</code> Segment Position Counting Actually Works</h2>
+    <p>
+      <code>IK3-02</code> is <strong>never a file line number</strong>. It is a <strong>1-based segment count starting at <code>ST</code> (where <code>ST == 1</code>)</strong> inside the transaction matched by <code>AK2-02</code>:
+    </p>
+<pre><code>ISA*...~        (Ignored by IK3-02)
+GS*...~         (Ignored by IK3-02)
+ST*837*0001*...~  &lt;-- Position 1
+BHT*0019*00*...~  &lt;-- Position 2
+HL*1**20*1~       &lt;-- Position 3
+NM1*85*2*...~     &lt;-- Position 4
+HL*2*1*22*0~      &lt;-- Position 5
+NM1*IL*1*...~     &lt;-- Position 6
+CLM*PAT01*340.50***11:B:1*Y*A*Y*Y~  &lt;-- Position 7 (IK3*CLM*7*2300*8~ / IK4*5:2*... -&gt; 'B')</code></pre>
+
+    <div class="cta-box">
+      <h3>Stop Counting <code>ST</code> Segments by Hand</h3>
+      <p><strong>EdiPrism X12 EDIFACT</strong> runs 100% offline inside IntelliJ IDEA, PyCharm, DataGrip, and Rider — mapping <code>999</code> rejections, validating <code>CLM-02</code>/<code>BPR-02</code> totals, and scrubbing HIPAA test fixtures locally.</p>
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install EdiPrism on JetBrains Marketplace &rarr;</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+  </footer>
+
+  <script>
+    function filterCodes() {
+      const q = document.getElementById('codeSearch').value.toLowerCase();
+      const rows = document.querySelectorAll('#codeTable tbody tr');
+      rows.forEach(r => {
+        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fix "ISA Segment Must Be 106 Characters" Offline (Byte Offset Table) — EdiPrism</title>
+  <meta name="description" content="Exact 106-byte ASC X12 ISA header offset reference (ISA-01 through ISA-16) and how to fix Slack, Microsoft Teams, or Jira space-collapsed ISA headers in 1 click offline inside JetBrains IDEs.">
+  <link rel="canonical" href="https://ediprism.github.io/fix-x12-isa-106-characters.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
+      <nav class="nav-links">
+        <a href="/">Overview</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
+        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
+        <a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrubber</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free ISA Fixer</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">Free Tier Utility &bull; 106-Byte ISA Spec</span>
+    <h1>Fix "ISA Segment Must Be 106 Characters" After Slack, Jira, or Teams Copy-Paste</h1>
+    <p class="lead">
+      Strict ASC X12 parsers locate the element separator at byte <code>3</code>, component separator at byte <code>104</code>, and segment terminator at byte <code>105</code>. When Slack, Teams, or HTML email collapses consecutive spaces inside <code>ISA-02</code>, <code>ISA-04</code>, <code>ISA-06</code>, or <code>ISA-08</code>, the entire file fails to parse.
+    </p>
+
+    <h2>Exact 106-Byte <code>ISA</code> Field Width &amp; Byte-Offset Map</h2>
+    <table>
+      <thead>
+        <tr><th>Element</th><th>Byte Range (0-Indexed)</th><th>Exact Length</th><th>Padding Rule</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>ISA</code> Tag + Sep</td><td><code>0..3</code></td><td><code>4</code></td><td>Literal <code>ISA*</code></td></tr>
+        <tr><td><code>ISA-01</code> Auth Qualifier</td><td><code>4..5</code></td><td><code>2</code></td><td><code>00</code> (or <code>03</code>)</td></tr>
+        <tr><td><code>ISA-02</code> Auth Info</td><td><code>7..16</code></td><td><strong><code>10</code></strong></td><td>Right-pad with ASCII spaces (<code>10</code> spaces when <code>ISA-01 == 00</code>)</td></tr>
+        <tr><td><code>ISA-03</code> Security Qualifier</td><td><code>18..19</code></td><td><code>2</code></td><td><code>00</code> (or <code>01</code>)</td></tr>
+        <tr><td><code>ISA-04</code> Security Info</td><td><code>21..30</code></td><td><strong><code>10</code></strong></td><td>Right-pad with ASCII spaces</td></tr>
+        <tr><td><code>ISA-05</code> Sender Qualifier</td><td><code>32..33</code></td><td><code>2</code></td><td>e.g. <code>ZZ</code>, <code>01</code>, <code>30</code></td></tr>
+        <tr><td><code>ISA-06</code> Interchange Sender ID</td><td><code>35..49</code></td><td><strong><code>15</code></strong></td><td>Right-pad with trailing spaces to exact 15 chars</td></tr>
+        <tr><td><code>ISA-07</code> Receiver Qualifier</td><td><code>51..52</code></td><td><code>2</code></td><td>e.g. <code>ZZ</code>, <code>01</code>, <code>30</code></td></tr>
+        <tr><td><code>ISA-08</code> Interchange Receiver ID</td><td><code>54..68</code></td><td><strong><code>15</code></strong></td><td>Right-pad with trailing spaces to exact 15 chars</td></tr>
+        <tr><td><code>ISA-09</code>..<code>ISA-12</code></td><td><code>70..88</code></td><td><code>6, 4, 1, 5</code></td><td><code>YYMMDD</code>, <code>HHMM</code>, Repetition (<code>^</code>), Version (<code>00501</code>)</td></tr>
+        <tr><td><code>ISA-13</code> Control Number</td><td><code>90..98</code></td><td><strong><code>9</code></strong></td><td>Left-pad digits with leading zeros (<code>000000042</code>)</td></tr>
+        <tr><td><code>ISA-14</code>..<code>ISA-16</code> + Term</td><td><code>100..105</code></td><td><code>1, 1, 1, 1</code></td><td>Ack (<code>0</code>/<code>1</code>), Usage (<code>P</code>/<code>T</code>), Component Sep (<code>:</code>), Seg Term (<code>~</code>)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="cta-box">
+      <h3>1-Click Free <code>ISA (106c)</code> Repair in JetBrains IDEs</h3>
+      <p>Never paste HIPAA or NDA payloads into online EDI formatters. <strong>EdiPrism's Free Tier</strong> repairs collapsed <code>ISA</code> headers and wraps single-line streams (<code>Alt+Shift+E</code>) 100% offline inside IntelliJ IDEA, PyCharm, DataGrip, and Rider.</p>
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free on JetBrains Marketplace &rarr;</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+  </footer>
+</body>
+</html>

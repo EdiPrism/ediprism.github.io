@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASC X12 837 Claim Balancing (CLM-02 vs SV1/SV2/SV3) &amp; Orphan HL Guide — EdiPrism</title>
+  <meta name="description" content="How to validate ASC X12 837P, 837I, and 837D claim charge balancing (CLM-02 == sum of SV1-02 / SV2-03 / SV3-02) and fix orphan HL-02 parent hierarchy errors offline in IntelliJ IDEA, PyCharm, DataGrip &amp; Rider.">
+  <link rel="canonical" href="https://ediprism.github.io/x12-837-clm02-service-line-balancing.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
+      <nav class="nav-links">
+        <a href="/">Overview</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
+        <a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA Guide</a>
+        <a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrubber</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in JetBrains IDE</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">Healthcare EDI Guide &bull; 837P / 837I / 837D</span>
+    <h1>ASC X12 <code>837</code> Financial Balancing (<code>CLM-02</code>) &amp; <code>HL</code> Hierarchy Validation</h1>
+    <p class="lead">
+      Two of the most frequent clearinghouse front-end rejections in <code>005010X222A1</code> (<code>837P</code>), <code>005010X223A2</code> (<code>837I</code>), and <code>005010X224A2</code> (<code>837D</code>) are service-line charge imbalances and broken <code>HL</code> parent pointers.
+    </p>
+
+    <h2>1. Claim Charge Balancing Formula</h2>
+    <p>Every Loop <code>2300</code> <code>CLM-02</code> (Total Claim Charge Amount) must equal the exact decimal sum of its child Loop <code>2400</code> service lines:</p>
+    <table>
+      <thead>
+        <tr><th>837 Transaction Type</th><th>Claim Header Total</th><th>Service Line Charge Element</th><th>Balancing Equation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>837P</code> Professional</td><td><code>CLM-02</code></td><td><code>SV1-02</code></td><td><code>CLM-02 == &Sigma; SV1-02</code></td></tr>
+        <tr><td><code>837I</code> Institutional</td><td><code>CLM-02</code></td><td><code>SV2-03</code></td><td><code>CLM-02 == &Sigma; SV2-03</code></td></tr>
+        <tr><td><code>837D</code> Dental</td><td><code>CLM-02</code></td><td><code>SV3-02</code></td><td><code>CLM-02 == &Sigma; SV3-02</code></td></tr>
+      </tbody>
+    </table>
+    <p>Always use exact base-10 <code>BigDecimal</code> arithmetic when generating or validating <code>837</code> claims — IEEE-754 floating-point math produces <code>$0.01</code> rounding drift on multi-line institutional claims.</p>
+
+    <h2>2. <code>HL</code> Parent-Child Hierarchy Rules (<code>2000A &rarr; 2000B &rarr; 2000C</code>)</h2>
+    <ul>
+      <li><code>HL-01</code> (Hierarchical ID Number) must be unique and increment sequentially starting from <code>1</code> within each <code>ST..SE</code> set.</li>
+      <li><code>HL-02</code> (Parent ID) must be blank on root Billing Provider nodes (<code>HL-03 == 20</code>) and must reference an <strong>already-seen</strong> <code>HL-01</code> on Subscriber (<code>22</code>) and Patient (<code>23</code>) nodes.</li>
+      <li>Trimming a multi-subscriber production <code>837</code> file in a text editor without re-numbering <code>HL-01</code>/<code>HL-02</code> creates immediate orphan <code>HL</code> rejections.</li>
+    </ul>
+
+    <div class="cta-box">
+      <h3>Validate <code>837</code> Claims 100% Offline Inside IntelliJ, PyCharm, DataGrip &amp; Rider</h3>
+      <p><strong>EdiPrism X12 EDIFACT</strong> flags exact <code>CLM-02</code> dollar deltas, orphan <code>HL-02</code> pointers, and <code>SE-01</code> trailer counts locally — with zero HIPAA cloud risk.</p>
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install EdiPrism on JetBrains Marketplace &rarr;</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+  </footer>
+</body>
+</html>

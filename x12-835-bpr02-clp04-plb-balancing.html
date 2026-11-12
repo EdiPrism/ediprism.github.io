@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASC X12 835 Remittance Balancing Guide (BPR-02, CLP-04, PLB &amp; CAS) — EdiPrism</title>
+  <meta name="description" content="Complete engineering reference for ASC X12 835 Electronic Remittance Advice (ERA) financial balancing: BPR-02 net payment vs CLP-04 claim payments, PLB provider-level adjustments, SVC line reconciliation, and semantic diffing.">
+  <link rel="canonical" href="https://ediprism.github.io/x12-835-bpr02-clp04-plb-balancing.html">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
+      <nav class="nav-links">
+        <a href="/">Overview</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
+        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
+        <a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrubber</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in JetBrains IDE</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">RCM &amp; Payer Engineering &bull; 005010X221A1</span>
+    <h1>ASC X12 <code>835</code> Electronic Remittance Advice Balancing (<code>BPR-02</code>, <code>CLP-04</code> &amp; <code>PLB</code>)</h1>
+    <p class="lead">
+      Understanding how check/EFT totals (<code>BPR-02</code>), claim-level payments (<code>CLP-04</code>), service lines (<code>SVC-03</code>), and provider-level withholdings/recoupments (<code>PLB</code>) reconcile inside an <code>835</code> ERA.
+    </p>
+
+    <h2>1. Transaction-Level Remittance Equation</h2>
+<pre><code>BPR-02 (Total Actual Provider Payment) == SUM(CLP-04 Claim Payments) - SUM(PLB-04, PLB-06, PLB-08, PLB-10, PLB-12, PLB-14)</code></pre>
+    <p>
+      Notice the minus sign on <code>PLB</code>: positive <code>PLB</code> amounts decrease the net EFT/check payout (e.g., prior-overpayment recoupment <code>WO</code>), whereas negative <code>PLB</code> amounts increase the check payout (e.g., interest payment <code>L6</code>).
+    </p>
+
+    <h2>2. Claim-Level &amp; Service-Line Balancing</h2>
+    <table>
+      <thead>
+        <tr><th>Level</th><th>Equation</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Loop <code>2100</code> Claim</td><td><code>CLP-03 (Billed) - &Sigma; CAS == CLP-04 (Paid)</code></td><td>Patient responsibility (<code>PR</code>) is also summarized in <code>CLP-05</code>.</td></tr>
+        <tr><td>Loop <code>2110</code> Service Line</td><td><code>CLP-04 == &Sigma; SVC-03</code></td><td>When <code>SVC</code> segments are present, line payments sum to <code>CLP-04</code>.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>3. Diffing Resent or Adjusted <code>835</code> Files Without Envelope Noise</h2>
+    <p>
+      When comparing yesterday's <code>835</code> against a payer reissue, raw text diff flags every single <code>ISA</code>, <code>GS</code>, <code>ST</code>, and <code>BPR-16</code> date/control number — even if only one <code>CAS</code> adjustment changed. In <strong>EdiPrism</strong>, press <code>Alt+Shift+D</code> (<strong>Semantic EDI Diff</strong>) to mask envelope noise and unwrap single-line streams automatically.
+    </p>
+
+    <div class="cta-box">
+      <h3>Inspect &amp; Diff <code>835</code> Remittances Offline</h3>
+      <p>Open <code>50 MB</code> single-line <code>835</code> files, verify <code>BPR-02</code> balancing, and diff ERA adjustments locally in IntelliJ IDEA, PyCharm, DataGrip, or Rider.</p>
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Get EdiPrism on JetBrains Marketplace &rarr;</a>
+    </div>
+  </main>
+
+  <footer>
+    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+  </footer>
+</body>
+</html>

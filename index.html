@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EdiPrism — 100% Offline ASC X12 &amp; UN/EDIFACT Inspector, Diff &amp; HIPAA Scrubber for JetBrains IDEs</title>
+  <meta name="description" content="Deterministic, 100% air-gapped ASC X12 (837, 835, 270, 850, 999) and UN/EDIFACT (ORDERS, DESADV, INVOIC) loop inspector, semantic diff, balancing validator, and HIPAA test-fixture scrubber for IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand &amp; WebStorm.">
+  <link rel="canonical" href="https://ediprism.github.io/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "EdiPrism X12 EDIFACT",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows, macOS, Linux",
+    "description": "100% offline ASC X12 & UN/EDIFACT loop inspector, semantic diff, financial balancing validator, 999 rejection pinpointer, and HIPAA test-fixture scrubber for JetBrains IDEs.",
+    "url": "https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact",
+    "downloadUrl": "https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact",
+    "author": {
+      "@type": "Organization",
+      "name": "EdiPrism",
+      "url": "https://ediprism.github.io/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="26" height="26" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+      </a>
+      <nav class="nav-links">
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
+        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
+        <a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA Guide</a>
+        <a href="/fix-x12-isa-106-characters.html">106-Byte ISA Fix</a>
+        <a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrubber</a>
+        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Get on JetBrains Marketplace</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <span class="pill">100% Offline &bull; Zero Cloud / Zero Telemetry &bull; HIPAA &amp; PCI Safe</span>
+    <h1>Inspect, Diff, Validate &amp; Scrub <code>ASC X12</code> &amp; <code>UN/EDIFACT</code> Inside Any JetBrains IDE</h1>
+    <p class="lead">
+      Built for healthcare (<code>837P/I/D</code>, <code>835</code>, <code>270/271</code>, <code>834</code>, <code>999</code>), retail supply-chain (<code>850</code>, <code>856</code>, <code>810</code>), and logistics (<code>ORDERS</code>, <code>DESADV</code>, <code>INVOIC</code>) engineers barred from pasting production EDI payloads into web parsers or cloud LLMs. Works natively across <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong>.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free Tier + 14-Day Pro Trial &rarr;</a>
+      <a class="btn btn-outline" href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a>
+    </div>
+
+    <img class="showcase" src="/assets/ediprism-showcase.gif" alt="EdiPrism X12 EDIFACT loop tree, semantic diff, balancing validator, and broken ISA fixer inside IntelliJ IDEA">
+
+    <h2>Why Regulated Engineering Teams Use EdiPrism</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>1-Click Slack/Jira Broken <code>ISA</code> Rescue</h3>
+        <p>Detects delimiters even when chat tools collapse fixed-width <code>ISA</code> headers below 106 characters, repairing padding in 1 click (Free Tier).</p>
+      </div>
+      <div class="card">
+        <h3>Hierarchical <code>HL</code> &amp; Business Loop Tree</h3>
+        <p>Reconstructs <code>1000A/B &rarr; 2000A/B/C &rarr; 2300 &rarr; 2400</code>, <code>835 CLP/SVC</code>, <code>850 PO1</code>, and <code>EDIFACT SG2/SG25</code> with two-way caret sync.</p>
+      </div>
+      <div class="card">
+        <h3>Semantic EDI Diff (<code>Alt+Shift+D</code> / <code>Ctrl+D</code>)</h3>
+        <p>Masks volatile <code>ISA</code>/<code>GS</code>/<code>ST</code>/<code>UNB</code> timestamps &amp; control numbers while normalizing single-line streams so real dollar changes stand out.</p>
+      </div>
+      <div class="card">
+        <h3><code>BigDecimal</code> Claim &amp; ERA Balancing</h3>
+        <p>Flags <code>SE01</code>/<code>GE01</code>/<code>IEA01</code> trailer mismatches, orphan <code>HL-02</code> parent IDs, <code>CLM02 != sum(SV102)</code>, and <code>BPR02 != sum(CLP04) - PLB</code>.</p>
+      </div>
+      <div class="card">
+        <h3>Deterministic Offline HIPAA Scrubber</h3>
+        <p>Anonymizes <code>NM1</code>/<code>N3</code>/<code>N4</code>/<code>DMG</code>/<code>PER</code>/<code>REF</code> locally via keyed <code>HmacSHA256</code> while preserving widths and valid <code>80840</code> Luhn NPIs.</p>
+      </div>
+      <div class="card">
+        <h3><code>20&ndash;50+ MB</code> Batch Performance</h3>
+        <p>Stateless incremental lexer + background <code>StAEDI</code> streaming pull-parser keeps UI threads responsive on multi-megabyte production interchanges.</p>
+      </div>
+    </div>
+
+    <h2>Free Tier vs. <code>[Pro]</code> Feature Matrix</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Capability</th>
+          <th>Free Tier (Forever Free, Zero Nag Modals)</th>
+          <th><code>[Pro]</code> (14-Day Free Trial in IDE)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Lenient <code>ISA</code> (<code>&lt;106</code>-byte Slack/Jira/Teams) &amp; <code>UNA</code> Pre-Normalizer + 1-Click Fix</td>
+          <td class="yes">Included</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td><code>20&ndash;50+ MB</code> Incremental Syntax Highlighting &amp; Hover Coordinates (<code>SV1-01-2</code>)</td>
+          <td class="yes">Included</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>1-Click Single-Line Wrap / Unwrap (<code>Alt+Shift+E</code>, <code>?'</code> release-character safe)</td>
+          <td class="yes">Included</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>Hierarchical <code>HL</code> &amp; Business Loop Tree + Element/Composite Breakdown Table</td>
+          <td>&mdash;</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>Semantic EDI Diff (<code>Alt+Shift+D</code> &amp; Native <code>Ctrl+D</code>)</td>
+          <td>&mdash;</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>Offline Trailer, Orphan <code>HL</code> &amp; <code>BigDecimal</code> Financial Balancing Validator</td>
+          <td>&mdash;</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>Deterministic HIPAA / PII Scrubber (Preserves Luhn &amp; <code>80840</code> NPI Check Digits)</td>
+          <td>&mdash;</td>
+          <td class="yes">Included</td>
+        </tr>
+        <tr>
+          <td>Bring-Your-Own-Schema (<code>StAEDI</code> XML &amp; JSON) + Offline JSON / CSV Export</td>
+          <td>&mdash;</td>
+          <td class="yes">Included</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>EDI Engineering Reference Guides &amp; Lookup Tables</h2>
+    <ul>
+      <li><a href="/x12-999-ik3-ik4-error-codes.html"><strong>Interactive ASC X12 999 / 997 <code>IK3</code> &amp; <code>IK4</code> Error Code Lookup Table</strong></a> — Searchable reference for <code>IK3-04</code>, <code>IK4-03</code>, <code>IK5-01</code>, and <code>ST</code>-relative segment position rules.</li>
+      <li><a href="/x12-837-clm02-service-line-balancing.html"><strong>ASC X12 837 Claim Balancing &amp; Orphan <code>HL</code> Troubleshooting Guide</strong></a> — How <code>CLM-02 == sum(SV1-02 / SV2-03 / SV3-02)</code> and <code>2000A/B/C</code> hierarchies work.</li>
+      <li><a href="/x12-835-bpr02-clp04-plb-balancing.html"><strong>ASC X12 835 ERA Remittance Balancing Guide (<code>BPR-02</code>, <code>CLP-04</code>, <code>PLB</code> &amp; <code>CAS</code>)</strong></a> — Reconciling net payment totals and provider-level adjustments.</li>
+      <li><a href="/fix-x12-isa-106-characters.html"><strong>Fixing "ISA Segment Must Be 106 Characters" After Slack/Jira/Teams Copy-Paste</strong></a> — Exact byte-offset map (<code>0..105</code>) for X12 interchange headers.</li>
+      <li><a href="/hipaa-scrub-837-835-test-fixtures.html"><strong>Creating HIPAA Safe Harbor <code>837</code> &amp; <code>835</code> Unit-Test Fixtures Offline</strong></a> — Preserving <code>80840</code> NPI check digits and cross-file referential integrity.</li>
+    </ul>
+  </main>
+
+  <footer>
+    <p>
+      <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull;
+      <a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy (100% Offline)</a> &bull;
+      <a href="https://github.com/EdiPrism/ediprism/blob/main/EULA.md">EULA</a> &bull;
+      <a href="https://github.com/EdiPrism/ediprism/issues">Support</a>
+    </p>
+    <p>X12 is a registered trademark of X12 Incorporated. EdiPrism is an independent clean-room developer tool derived from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated or UNECE.</p>
+  </footer>
+</body>
+</html>
