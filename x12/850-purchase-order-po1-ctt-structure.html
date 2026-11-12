@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASC X12 850 Purchase Order Structure: BEG, N1, PO1, PID &amp; CTT Guide — EdiPrism</title>
+  <meta name="description" content="Complete developer guide to ASC X12 850 Purchase Orders (004010 / 005010): BEG order types, REF department/vendor numbers, N1 ST/BT/VN party loops, PO1 SKU qualifiers (UP, EN, VN, IN), SAC allowances, and CTT totals.">
+  <link rel="canonical" href="https://ediprism.github.io/x12/850-purchase-order-po1-ctt-structure.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="ASC X12 850 Purchase Order Structure: BEG, N1, PO1, PID &amp; CTT Guide — EdiPrism">
+  <meta property="og:description" content="Complete developer guide to ASC X12 850 Purchase Orders (004010 / 005010): BEG order types, REF department/vendor numbers, N1 ST/BT/VN party loops, PO1 SKU qualifiers (UP, EN, VN, IN), SAC allowances, and CTT totals.">
+  <meta property="og:url" content="https://ediprism.github.io/x12/850-purchase-order-po1-ctt-structure.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ASC X12 850 Purchase Order Structure: BEG, N1, PO1, PID &amp; CTT Guide — EdiPrism">
+  <meta name="twitter:description" content="Complete developer guide to ASC X12 850 Purchase Orders (004010 / 005010): BEG order types, REF department/vendor numbers, N1 ST/BT/VN party loops, PO1 SKU qualifiers (UP, EN, VN, IN), SAC allowances, and CTT totals.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ASC X12 850 Purchase Order Structure: BEG, N1, PO1, PID & CTT Guide — EdiPrism","description":"Complete developer guide to ASC X12 850 Purchase Orders (004010 / 005010): BEG order types, REF department/vendor numbers, N1 ST/BT/VN party loops, PO1 SKU qualifiers (UP, EN, VN, IN), SAC allowances, and CTT totals.","url":"https://ediprism.github.io/x12/850-purchase-order-po1-ctt-structure.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"ASC X12 Hub","item":"https://ediprism.github.io/x12/"},{"@type":"ListItem","position":3,"name":"ASC X12 850 Purchase Order Structure: BEG, N1, PO1, PID & CTT Guide — EdiPrism","item":"https://ediprism.github.io/x12/850-purchase-order-po1-ctt-structure.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What happens if CTT-01 does not match the number of PO1 lines?","acceptedAnswer":{"@type":"Answer","text":"Retailers and VAN translators flag a functional/application error or reject the PO because CTT-01 is a mandatory control count of PO1 baseline item loops."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/x12/">ASC X12 Hub</a> <span>/</span>
+        <span>X12 850 Purchase Order</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">X12 850 Purchase Order</span>
+      </div>
+      <h1>ASC X12 <code>850</code> Retail &amp; Manufacturing Purchase Order Reference</h1>
+      <p class="lead">The backbone of North American retail, grocery, and manufacturing procurement, <code>850</code> initiates the <code>850 &rarr; 855 &rarr; 856 &rarr; 810</code> order-to-cash lifecycle.</p>
+
+      <h2 id="850-segments">Key <code>850</code> Segments &amp; Product ID Qualifiers</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Segment</th><th>Section</th><th>Critical Elements &amp; Retail Rules</th></tr></thead>
+    <tbody>
+      <tr><td><code>BEG</code></td><td>Header</td><td><code>BEG-01</code> Purpose (<code>00</code>=Original), <code>BEG-02</code> Type (<code>SA</code>=Stand-Alone, <code>DS</code>=Drop-Ship, <code>BK</code>=Blanket), <code>BEG-03</code> PO Number, <code>BEG-05</code> PO Date.</td></tr>
+      <tr><td><code>FOB</code> / <code>ITD</code> / <code>DTM</code></td><td>Header</td><td>Freight payment terms, net discount days, and requested ship/cancel dates (<code>DTM*010</code>, <code>DTM*001</code>).</td></tr>
+      <tr><td><code>N1</code> + <code>N3</code> + <code>N4</code></td><td>Party Loops</td><td><code>N1*ST</code> Ship-To DC/Store (often with <code>92</code> assigned store # or <code>UL</code> GLN), <code>N1*BT</code> Bill-To, <code>N1*VN</code> Supplier.</td></tr>
+      <tr><td><code>PO1</code></td><td>Line Item Loop</td><td><code>PO1-01</code> Line #, <code>PO1-02</code> Qty, <code>PO1-03</code> UOM (<code>EA</code>, <code>CA</code>), <code>PO1-04</code> Unit Price, followed by paired qualifiers: <code>UP</code> (UPC-12), <code>EN</code> (EAN-13), <code>UK</code> (GTIN-14), <code>VN</code> (Vendor SKU), <code>IN</code> (Buyer Item #).</td></tr>
+      <tr><td><code>CTT</code></td><td>Summary</td><td><code>CTT-01</code> = Exact count of <code>PO1</code> segments in transaction; optional <code>CTT-02</code> = hash sum of <code>PO1-02</code> quantities.</td></tr>
+    </tbody>
+  </table>
+</div>
+<pre><code>ST*850*0001~
+BEG*00*SA*PO-884920**20261112~
+REF*DP*042~
+DTM*010*20261118~
+DTM*001*20261125~
+N1*ST*MIDWEST DISTRIBUTION CTR #14*92*0014~
+N3*900 LOGISTICS PKWY~
+N4*JOLIET*IL*60431~
+PO1*1*24*CA*48.50*PE*UP*012345678905*VN*SKU-4410~
+PID*F****ORGANIC COLD BREW 12PK~
+PO1*2*12*CA*52.00*PE*UP*012345678912*VN*SKU-4412~
+PID*F****VANILLA OAT LATTE 12PK~
+CTT*2*36~                                    &lt;-- 2 PO1 lines, 24 + 12 = 36 total cases
+SE*14*0001~</code></pre>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>What happens if CTT-01 does not match the number of PO1 lines?</summary><p>Retailers and VAN translators flag a functional/application error or reject the PO because CTT-01 is a mandatory control count of PO1 baseline item loops.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#850-segments">Key 850 Segments &amp; Product ID Qualifiers</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice (ASN)</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Commercial Invoice</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS Equivalent</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

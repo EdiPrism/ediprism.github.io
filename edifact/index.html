@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UN/EDIFACT Messages, UNA/UNB Envelopes &amp; Segment Groups Hub (D.96A / D.01B) — EdiPrism</title>
+  <meta name="description" content="Developer reference for UN/EDIFACT UNA service string advice, UNB/UNH/UNT/UNZ envelopes, ?&#39; release character escaping, and ORDERS, DESADV, INVOIC, ORDRSP, CONTRL, and DELFOR messages.">
+  <link rel="canonical" href="https://ediprism.github.io/edifact/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="UN/EDIFACT Messages, UNA/UNB Envelopes &amp; Segment Groups Hub (D.96A / D.01B) — EdiPrism">
+  <meta property="og:description" content="Developer reference for UN/EDIFACT UNA service string advice, UNB/UNH/UNT/UNZ envelopes, ?&#39; release character escaping, and ORDERS, DESADV, INVOIC, ORDRSP, CONTRL, and DELFOR messages.">
+  <meta property="og:url" content="https://ediprism.github.io/edifact/">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="UN/EDIFACT Messages, UNA/UNB Envelopes &amp; Segment Groups Hub (D.96A / D.01B) — EdiPrism">
+  <meta name="twitter:description" content="Developer reference for UN/EDIFACT UNA service string advice, UNB/UNH/UNT/UNZ envelopes, ?&#39; release character escaping, and ORDERS, DESADV, INVOIC, ORDRSP, CONTRL, and DELFOR messages.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"UN/EDIFACT Messages, UNA/UNB Envelopes & Segment Groups Hub (D.96A / D.01B) — EdiPrism","description":"Developer reference for UN/EDIFACT UNA service string advice, UNB/UNH/UNT/UNZ envelopes, ?' release character escaping, and ORDERS, DESADV, INVOIC, ORDRSP, CONTRL, and DELFOR messages.","url":"https://ediprism.github.io/edifact/","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"Docs Hub","item":"https://ediprism.github.io/docs/"},{"@type":"ListItem","position":3,"name":"UN/EDIFACT Messages, UNA/UNB Envelopes & Segment Groups Hub (D.96A / D.01B) — EdiPrism","item":"https://ediprism.github.io/edifact/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why do naive regex splitters break UN/EDIFACT files?","acceptedAnswer":{"@type":"Answer","text":"Because UN/EDIFACT uses ? as an escape character before ', +, and :. For example, O?'Reilly Auto Parts contains an escaped apostrophe inside free text, not a segment terminator. EdiPrism's stateful lexer handles ?? vs ?' cleanly."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/docs/">Docs Hub</a> <span>/</span>
+        <span>UN/EDIFACT Hub</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">UN/EDIFACT Hub</span>
+      </div>
+      <h1>UN/EDIFACT Global Supply-Chain, Retail &amp; Logistics Engineering Hub</h1>
+      <p class="lead">Clean-room engineering guide to public UNECE UN/EDIFACT directories (<code>D.96A</code>, <code>D.01B</code>, <code>EANCOM</code>), covering <code>UNA</code> delimiter declarations, <code>?</code> release-character escaping, and segment group (<code>SG</code>) state machines.</p>
+
+      <h2 id="una-overview">UN/EDIFACT Envelope &amp; <code>UNA</code> Delimiter Architecture</h2>
+<p>Unlike ASC X12's 106-byte fixed-width <code>ISA</code> header, UN/EDIFACT declares its 6 syntax characters inside an optional 9-byte <code>UNA</code> Service String Advice immediately preceding <code>UNB</code>:</p>
+<pre><code>UNA:+.? '
+UNB+UNOC:3+5412345000013:14+4012345000094:14+261112:1430+00004819'
+  UNH+1+ORDERS:D:96A:UN:EAN008'
+    BGM+220+PO-2026-9941+9'
+    DTM+137:20261112:102'
+    ... [SG2 NAD Parties &amp; SG25 LIN Items] ...
+    UNS+S'
+    CNT+2:14'
+  UNT+38+1'            &lt;-- UNT-01 (38) counts UNH..UNT inclusive; UNT-02 matches UNH-01
+UNZ+1+00004819'        &lt;-- UNZ-01 (1) counts messages/groups; UNZ-02 matches UNB-05</code></pre>
+      <h2 id="edifact-messages">Core UN/EDIFACT Message Reference Guides</h2>
+<div class="grid">
+  <a class="card card-link" href="/edifact/una-unb-unh-unt-unz-envelope-syntax.html"><span class="card-tag">Syntax &amp; Escaping</span><h3>UNA, UNB, UNH, UNT &amp; UNZ Envelopes &rarr;</h3><p>Exact 9-byte UNA offsets, ? release escaping rules (?', ?+, ?:, ??), and trailer counters.</p></a>
+  <a class="card card-link" href="/edifact/orders-purchase-order-bgm-lin-uns.html"><span class="card-tag">Procurement</span><h3>ORDERS Purchase Order &rarr;</h3><p>BGM+220 headers, SG2 NAD GLN parties, SG25 LIN/PIA/IMD/QTY/PRI lines, and UNS+S summary.</p></a>
+  <a class="card card-link" href="/edifact/ordrsp-order-response-line-status.html"><span class="card-tag">Order Confirmation</span><h3>ORDRSP Order Response &rarr;</h3><p>BGM+231 confirmations, line action codes (accepted, amended, rejected), and DTM delivery updates.</p></a>
+  <a class="card card-link" href="/edifact/desadv-despatch-advice-cps-pac-lin.html"><span class="card-tag">Shipping / ASN</span><h3>DESADV Despatch Advice &rarr;</h3><p>SG10 CPS hierarchical pallet/carton sequences, PAC/PCI/GIN SSCC-18 barcodes, and SG17 LIN items.</p></a>
+  <a class="card card-link" href="/edifact/invoic-commercial-invoice-moa-tax-alc.html"><span class="card-tag">AP / VAT Invoicing</span><h3>INVOIC Commercial Invoice &rarr;</h3><p>SG26 LIN invoice lines, ALC allowances, MOA+77/79/125/176 totals, and TAX/VAT reconciliation.</p></a>
+  <a class="card card-link" href="/edifact/contrl-uci-ucf-ucm-ucs-syntax-acknowledgment.html"><span class="card-tag">Syntax Ack</span><h3>CONTRL Syntax &amp; Service Report &rarr;</h3><p>EDIFACT equivalent of X12 999: decoding UCI, UCM, UCS segment positions, and UCD element errors.</p></a>
+  <a class="card card-link" href="/edifact/iftmin-iftsta-delfor-logistics-automotive.html"><span class="card-tag">3PL &amp; Automotive</span><h3>IFTMIN, IFTSTA, DELFOR &amp; DELJIT &rarr;</h3><p>Freight forwarding instructions, carrier status updates, and OEM automotive JIT schedules.</p></a>
+</div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Why do naive regex splitters break UN/EDIFACT files?</summary><p>Because UN/EDIFACT uses ? as an escape character before &#39;, +, and :. For example, O?&#39;Reilly Auto Parts contains an escaped apostrophe inside free text, not a segment terminator. EdiPrism&#39;s stateful lexer handles ?? vs ?&#39; cleanly.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#una-overview">UN/EDIFACT Envelope &amp; UNA Delimiter Architecture</a></li>
+          <li><a href="#edifact-messages">Core UN/EDIFACT Message Reference Guides</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/x12/">ASC X12 Reference Hub</a></li>
+          <li><a href="/guides/semantic-edi-diff-ignore-isa-gs-control-numbers.html">Semantic EDI Diff Guide</a></li>
+          <li><a href="/guides/convert-export-x12-edifact-to-json-csv-offline.html">Offline JSON & CSV Export</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

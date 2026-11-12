@@ -3,63 +3,212 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ASC X12 837 Claim Balancing (CLM-02 vs SV1/SV2/SV3) &amp; Orphan HL Guide — EdiPrism</title>
-  <meta name="description" content="How to validate ASC X12 837P, 837I, and 837D claim charge balancing (CLM-02 == sum of SV1-02 / SV2-03 / SV3-02) and fix orphan HL-02 parent hierarchy errors offline in IntelliJ IDEA, PyCharm, DataGrip &amp; Rider.">
+  <title>ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) &amp; Orphan HL Guide — EdiPrism</title>
+  <meta name="description" content="Prevent clearinghouse and 277CA front-end rejections by validating CLM-02 == sum(SV1-02 / SV2-03 / SV3-02) with exact BigDecimal math and verifying 2000A/2000B/2000C HL parent pointers.">
   <link rel="canonical" href="https://ediprism.github.io/x12-837-clm02-service-line-balancing.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) &amp; Orphan HL Guide — EdiPrism">
+  <meta property="og:description" content="Prevent clearinghouse and 277CA front-end rejections by validating CLM-02 == sum(SV1-02 / SV2-03 / SV3-02) with exact BigDecimal math and verifying 2000A/2000B/2000C HL parent pointers.">
+  <meta property="og:url" content="https://ediprism.github.io/x12-837-clm02-service-line-balancing.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) &amp; Orphan HL Guide — EdiPrism">
+  <meta name="twitter:description" content="Prevent clearinghouse and 277CA front-end rejections by validating CLM-02 == sum(SV1-02 / SV2-03 / SV3-02) with exact BigDecimal math and verifying 2000A/2000B/2000C HL parent pointers.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) & Orphan HL Guide — EdiPrism","description":"Prevent clearinghouse and 277CA front-end rejections by validating CLM-02 == sum(SV1-02 / SV2-03 / SV3-02) with exact BigDecimal math and verifying 2000A/2000B/2000C HL parent pointers.","url":"https://ediprism.github.io/x12-837-clm02-service-line-balancing.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"ASC X12 Hub","item":"https://ediprism.github.io/x12/"},{"@type":"ListItem","position":3,"name":"ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) & Orphan HL Guide — EdiPrism","item":"https://ediprism.github.io/x12-837-clm02-service-line-balancing.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why is Institutional 837I line charge in SV2-03 instead of SV2-02?","acceptedAnswer":{"@type":"Answer","text":"In 837I Institutional claims, SV2-01 carries the NUBC Revenue Code (e.g. 0450 Emergency Room) and SV2-02 carries the optional HCPCS procedure composite, shifting the Monetary Line Item Charge Amount to SV2-03."}},{"@type":"Question","name":"Does COB (Loop 2320 / 2430 SVD) change the CLM-02 balancing rule?","acceptedAnswer":{"@type":"Answer","text":"CLM-02 still equals the sum of Loop 2400 submitted line charges (SV1-02/SV2-03/SV3-02). Secondary payer coordination-of-benefits balancing is validated separately across Loop 2320 AMT and Loop 2430 SVD/CAS/DTP."}}]}]}
+  </script>
 </head>
 <body>
   <header class="nav">
     <div class="nav-inner">
-      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
-      <nav class="nav-links">
-        <a href="/">Overview</a>
-        <a href="/x12-999-ik3-ik4-error-codes.html">999 Error Lookup</a>
-        <a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA Guide</a>
-        <a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrubber</a>
-        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in JetBrains IDE</a>
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
       </nav>
     </div>
   </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/x12/">ASC X12 Hub</a> <span>/</span>
+        <span>837 Claim Balancing</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">837 Claim Balancing</span>
+      </div>
+      <h1>ASC X12 <code>837</code> Claim Balancing (<code>CLM-02</code>) &amp; Orphan <code>HL</code> Troubleshooting</h1>
+      <p class="lead">Two of the most expensive front-end batch rejections in <code>837P</code>, <code>837I</code>, and <code>837D</code> pipelines are service-line charge mismatches against <code>CLM-02</code> and broken <code>HL-02</code> parent pointers after claim filtering.</p>
 
-  <main class="container">
-    <span class="pill">Healthcare EDI Guide &bull; 837P / 837I / 837D</span>
-    <h1>ASC X12 <code>837</code> Financial Balancing (<code>CLM-02</code>) &amp; <code>HL</code> Hierarchy Validation</h1>
-    <p class="lead">
-      Two of the most frequent clearinghouse front-end rejections in <code>005010X222A1</code> (<code>837P</code>), <code>005010X223A2</code> (<code>837I</code>), and <code>005010X224A2</code> (<code>837D</code>) are service-line charge imbalances and broken <code>HL</code> parent pointers.
-    </p>
+      <h2 id="clm02-formula">1. Exact Service-Line Charge Balancing Across <code>837P</code>, <code>837I</code> &amp; <code>837D</code></h2>
+<p>Every Loop <code>2300</code> <code>CLM-02</code> Total Claim Charge Amount must equal the exact decimal sum of all child Loop <code>2400</code> service lines under that claim:</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Transaction Variant</th><th>Claim Total Coordinate</th><th>Loop 2400 Line Charge Coordinate</th><th>Required Invariant</th></tr></thead>
+    <tbody>
+      <tr><td><strong>837P Professional</strong> (<code>X222A1</code>)</td><td><code>CLM-02</code></td><td><code>SV1-02</code></td><td><code>CLM-02 == &Sigma; SV1-02</code></td></tr>
+      <tr><td><strong>837I Institutional</strong> (<code>X223A2</code>)</td><td><code>CLM-02</code></td><td><code>SV2-03</code> (note element #3, since <code>SV2-01</code> is Revenue Code)</td><td><code>CLM-02 == &Sigma; SV2-03</code></td></tr>
+      <tr><td><strong>837D Dental</strong> (<code>X224A2</code>)</td><td><code>CLM-02</code></td><td><code>SV3-02</code></td><td><code>CLM-02 == &Sigma; SV3-02</code></td></tr>
+    </tbody>
+  </table>
+</div>
+<div class="callout callout-warn">
+  <strong>IEEE-754 Float Drift Trap</strong>
+  Summing line charges using binary <code>double</code> / <code>float</code> in Java, Python, JavaScript, or C# produces artifacts like <code>19.99 + 39.99 + 9.95 = 69.93000000000001</code>, triggering penny-rounding discrepancies. Always use arbitrary-precision <code>BigDecimal</code> / <code>Decimal</code>.
+</div>
+      <h2 id="orphan-hl">2. Detecting Orphan &amp; Out-of-Sequence <code>HL</code> Hierarchies</h2>
+<p>In <code>837</code> transactions, Loops <code>2000A</code> (Billing Provider, <code>HL-03=20</code>), <code>2000B</code> (Subscriber, <code>HL-03=22</code>), and <code>2000C</code> (Patient Dependent, <code>HL-03=23</code>) form a strict tree via <code>HL-01</code> (ID) and <code>HL-02</code> (Parent ID):</p>
+<pre><code>HL*1**20*1~         &lt;-- Billing Provider (HL-01 = 1, Root, has children = 1)
+HL*2*1*22*1~        &lt;-- Subscriber (HL-01 = 2, Parent = 1, has Dependent child = 1)
+HL*3*2*23*0~        &lt;-- Patient (HL-01 = 3, Parent = 2, no subordinate HL = 0)</code></pre>
+<p>When an ETL filter drops an ineligible subscriber or re-chunks a large batch without re-indexing <code>HL-01</code>/<code>HL-02</code> sequentially from <code>1</code>, downstream clearinghouses reject the entire <code>ST</code> set.</p>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/03-financial-balancing-validator.png" alt="ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) &amp; Orphan HL Guide — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Why is Institutional 837I line charge in SV2-03 instead of SV2-02?</summary><p>In 837I Institutional claims, SV2-01 carries the NUBC Revenue Code (e.g. 0450 Emergency Room) and SV2-02 carries the optional HCPCS procedure composite, shifting the Monetary Line Item Charge Amount to SV2-03.</p></details>
+        <details class="faq-item"><summary>Does COB (Loop 2320 / 2430 SVD) change the CLM-02 balancing rule?</summary><p>CLM-02 still equals the sum of Loop 2400 submitted line charges (SV1-02/SV2-03/SV3-02). Secondary payer coordination-of-benefits balancing is validated separately across Loop 2320 AMT and Loop 2430 SVD/CAS/DTP.</p></details>
+      </div>
 
-    <h2>1. Claim Charge Balancing Formula</h2>
-    <p>Every Loop <code>2300</code> <code>CLM-02</code> (Total Claim Charge Amount) must equal the exact decimal sum of its child Loop <code>2400</code> service lines:</p>
-    <table>
-      <thead>
-        <tr><th>837 Transaction Type</th><th>Claim Header Total</th><th>Service Line Charge Element</th><th>Balancing Equation</th></tr>
-      </thead>
-      <tbody>
-        <tr><td><code>837P</code> Professional</td><td><code>CLM-02</code></td><td><code>SV1-02</code></td><td><code>CLM-02 == &Sigma; SV1-02</code></td></tr>
-        <tr><td><code>837I</code> Institutional</td><td><code>CLM-02</code></td><td><code>SV2-03</code></td><td><code>CLM-02 == &Sigma; SV2-03</code></td></tr>
-        <tr><td><code>837D</code> Dental</td><td><code>CLM-02</code></td><td><code>SV3-02</code></td><td><code>CLM-02 == &Sigma; SV3-02</code></td></tr>
-      </tbody>
-    </table>
-    <p>Always use exact base-10 <code>BigDecimal</code> arithmetic when generating or validating <code>837</code> claims — IEEE-754 floating-point math produces <code>$0.01</code> rounding drift on multi-line institutional claims.</p>
 
-    <h2>2. <code>HL</code> Parent-Child Hierarchy Rules (<code>2000A &rarr; 2000B &rarr; 2000C</code>)</h2>
-    <ul>
-      <li><code>HL-01</code> (Hierarchical ID Number) must be unique and increment sequentially starting from <code>1</code> within each <code>ST..SE</code> set.</li>
-      <li><code>HL-02</code> (Parent ID) must be blank on root Billing Provider nodes (<code>HL-03 == 20</code>) and must reference an <strong>already-seen</strong> <code>HL-01</code> on Subscriber (<code>22</code>) and Patient (<code>23</code>) nodes.</li>
-      <li>Trimming a multi-subscriber production <code>837</code> file in a text editor without re-numbering <code>HL-01</code>/<code>HL-02</code> creates immediate orphan <code>HL</code> rejections.</li>
-    </ul>
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
 
-    <div class="cta-box">
-      <h3>Validate <code>837</code> Claims 100% Offline Inside IntelliJ, PyCharm, DataGrip &amp; Rider</h3>
-      <p><strong>EdiPrism X12 EDIFACT</strong> flags exact <code>CLM-02</code> dollar deltas, orphan <code>HL-02</code> pointers, and <code>SE-01</code> trailer counts locally — with zero HIPAA cloud risk.</p>
-      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install EdiPrism on JetBrains Marketplace &rarr;</a>
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#clm02-formula">1. Exact Service-Line Charge Balancing Across 837P, 837I &amp; 837D</a></li>
+          <li><a href="#orphan-hl">2. Detecting Orphan &amp; Out-of-Sequence HL Hierarchies</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Loop Structure</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional UB-04 Guide</a></li>
+          <li><a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA BPR-02 Balancing Guide</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
     </div>
-  </main>
+  </div>
 
   <footer>
-    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
   </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
 </body>
 </html>

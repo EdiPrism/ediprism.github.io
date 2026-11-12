@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASC X12 270 &amp; 271 Eligibility Inquiry / Benefit Response Guide (EQ, EB &amp; AAA) — EdiPrism</title>
+  <meta name="description" content="Engineering guide to ASC X12 270 Eligibility Inquiry and 271 Benefit Response: 2000A-D HL hierarchy, Loop 2110C/D EQ service type codes (30 Health Benefit Plan Coverage), EB deductibles/copays, and AAA errors.">
+  <link rel="canonical" href="https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="ASC X12 270 &amp; 271 Eligibility Inquiry / Benefit Response Guide (EQ, EB &amp; AAA) — EdiPrism">
+  <meta property="og:description" content="Engineering guide to ASC X12 270 Eligibility Inquiry and 271 Benefit Response: 2000A-D HL hierarchy, Loop 2110C/D EQ service type codes (30 Health Benefit Plan Coverage), EB deductibles/copays, and AAA errors.">
+  <meta property="og:url" content="https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ASC X12 270 &amp; 271 Eligibility Inquiry / Benefit Response Guide (EQ, EB &amp; AAA) — EdiPrism">
+  <meta name="twitter:description" content="Engineering guide to ASC X12 270 Eligibility Inquiry and 271 Benefit Response: 2000A-D HL hierarchy, Loop 2110C/D EQ service type codes (30 Health Benefit Plan Coverage), EB deductibles/copays, and AAA errors.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ASC X12 270 & 271 Eligibility Inquiry / Benefit Response Guide (EQ, EB & AAA) — EdiPrism","description":"Engineering guide to ASC X12 270 Eligibility Inquiry and 271 Benefit Response: 2000A-D HL hierarchy, Loop 2110C/D EQ service type codes (30 Health Benefit Plan Coverage), EB deductibles/copays, and AAA errors.","url":"https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"ASC X12 Hub","item":"https://ediprism.github.io/x12/"},{"@type":"ListItem","position":3,"name":"ASC X12 270 & 271 Eligibility Inquiry / Benefit Response Guide (EQ, EB & AAA) — EdiPrism","item":"https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Why does Loop 2120C/D have LS*2120 and LE*2120 wrapper segments?","acceptedAnswer":{"@type":"Answer","text":"In X12 271, Loop 2120 (Benefit Related Entity, such as an assigned Primary Care Physician or third-party dental/pharmacy administrator) is nested inside Loop 2110 EB using explicit LS*2120 (Loop Header) and LE*2120 (Loop Trailer) bounded loop markers to prevent parser ambiguity."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/x12/">ASC X12 Hub</a> <span>/</span>
+        <span>270 / 271 (005010X279A1)</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">270 / 271 (005010X279A1)</span>
+      </div>
+      <h1>ASC X12 <code>270</code> / <code>271</code> Real-Time Eligibility &amp; Benefit Loops (<code>005010X279A1</code>)</h1>
+      <p class="lead">Real-time <code>270</code>/<code>271</code> transactions power front-desk patient coverage verification across CAQH CORE HTTP/SOAP endpoints and batch roster sweeps.</p>
+
+      <h2 id="hl-levels">Four-Tier <code>HL</code> Hierarchy &amp; <code>EB</code> Benefit Codes</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Loop</th><th>HL Level Code (<code>HL-03</code>)</th><th>Key Segments in <code>270</code> (Inquiry)</th><th>Key Segments in <code>271</code> (Response)</th></tr></thead>
+    <tbody>
+      <tr><td><code>2000A</code></td><td><code>20</code> Information Source</td><td><code>NM1*PR</code> Payer</td><td><code>NM1*PR</code>, <code>PER</code>, <code>AAA</code> (payer-level outage/error)</td></tr>
+      <tr><td><code>2000B</code></td><td><code>21</code> Information Receiver</td><td><code>NM1*1P</code> / <code>FA</code> Provider + NPI</td><td><code>NM1*1P</code>, <code>AAA</code> (invalid NPI / uncontracted provider)</td></tr>
+      <tr><td><code>2000C</code></td><td><code>22</code> Subscriber</td><td><code>TRN</code>, <code>NM1*IL</code>, <code>DMG</code>, <code>DTP*291</code>, <code>2110C EQ*30</code></td><td><code>TRN</code>, <code>NM1*IL</code>, <code>INS</code>, <code>2110C EB</code> (Active/Inactive, Deductible, Copay, Coinsurance)</td></tr>
+      <tr><td><code>2000D</code></td><td><code>23</code> Dependent</td><td><code>TRN</code>, <code>NM1*03</code>, <code>DMG</code>, <code>2110D EQ</code></td><td><code>2110D EB</code>, <code>HSD</code>, <code>MSG</code>, <code>2120D</code> Benefit Related Entity (PCP / Carve-out PBM)</td></tr>
+    </tbody>
+  </table>
+</div>
+<pre><code>// Common EB-01 Eligibility / Benefit Information Codes in Loop 2110C/2110D:
+EB*1*IND*30**GOLD PPO PLAN~             &lt;-- EB-01 = 1 (Active Coverage)
+EB*C*IND*30***29*1500.00*****Y~         &lt;-- EB-01 = C (Deductible), EB-06 = 29 (Remaining = $1,500.00), In-Network = Y
+EB*B*IND*98****40.00*****Y~             &lt;-- EB-01 = B (Co-Payment = $40.00 for Professional Office Visit 98)
+EB*6*IND*30~                            &lt;-- EB-01 = 6 (Inactive Coverage)</code></pre>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Why does Loop 2120C/D have LS*2120 and LE*2120 wrapper segments?</summary><p>In X12 271, Loop 2120 (Benefit Related Entity, such as an assigned Primary Care Physician or third-party dental/pharmacy administrator) is nested inside Loop 2110 EB using explicit LS*2120 (Loop Header) and LE*2120 (Loop Trailer) bounded loop markers to prevent parser ambiguity.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#hl-levels">Four-Tier HL Hierarchy &amp; EB Benefit Codes</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Reason Code Lookup</a></li>
+          <li><a href="/x12/278-prior-authorization-um-hierarchy.html">278 Prior Authorization Guide</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Scrub 271 Test Fixtures</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

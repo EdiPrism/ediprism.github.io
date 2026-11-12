@@ -4,104 +4,243 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ASC X12 999 &amp; 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism</title>
-  <meta name="description" content="Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837/834/850 files.">
+  <meta name="description" content="Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837, 834, 270, and 850 files.">
   <link rel="canonical" href="https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="ASC X12 999 &amp; 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism">
+  <meta property="og:description" content="Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837, 834, 270, and 850 files.">
+  <meta property="og:url" content="https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ASC X12 999 &amp; 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism">
+  <meta name="twitter:description" content="Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837, 834, 270, and 850 files.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"ASC X12 999 & 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism","description":"Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837, 834, 270, and 850 files.","url":"https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"ASC X12 Hub","item":"https://ediprism.github.io/x12/"},{"@type":"ListItem","position":3,"name":"ASC X12 999 & 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism","item":"https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does CTX*SITUATIONAL TRIGGER mean in an X12 999 acknowledgment?","acceptedAnswer":{"@type":"Answer","text":"When IK3-04 or IK4-03 reports an implementation situational error (such as I6, I9, or I10), the clearinghouse emits a child CTX segment identifying the exact companion-guide segment and element whose value triggered that situational requirement."}},{"@type":"Question","name":"How do composite positions in IK4-01 work?","acceptedAnswer":{"@type":"Answer","text":"IK4-01 uses a composite structure: IK4-01-1 is the 1-based element position within the segment, and IK4-01-2 is the 1-based component position inside a composite field. For example, IK4*5:2 points to element 05, subfield 2 (such as CLM-05-2)."}}]}]}
+  </script>
 </head>
 <body>
   <header class="nav">
     <div class="nav-inner">
-      <a class="brand" href="/"><img src="/favicon.svg" width="26" height="26" alt="EdiPrism"><span>EdiPrism</span></a>
-      <nav class="nav-links">
-        <a href="/">Overview</a>
-        <a href="/x12-837-clm02-service-line-balancing.html">837 Balancing</a>
-        <a href="/x12-835-bpr02-clp04-plb-balancing.html">835 ERA Guide</a>
-        <a href="/fix-x12-isa-106-characters.html">106-Byte ISA Fix</a>
-        <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open in JetBrains IDE</a>
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
       </nav>
     </div>
   </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/x12/">ASC X12 Hub</a> <span>/</span>
+        <span>999 / 997 Error Lookup</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">999 / 997 Error Lookup</span>
+      </div>
+      <h1>ASC X12 <code>999</code> &amp; <code>997</code> Error Code Lookup (<code>IK3</code>, <code>IK4</code>, <code>IK5</code>, <code>AK9</code>)</h1>
+      <p class="lead">Filter any <code>IK3-04</code> segment error code, <code>IK4-03</code> element error code, or <code>IK5</code>/<code>AK9</code> disposition below &mdash; and see how <code>IK3-02</code> <code>ST</code>-relative segment positions map back to your outbound <code>837</code>, <code>834</code>, <code>270</code>, or <code>850</code> batch.</p>
 
-  <main class="container">
-    <span class="pill">Interactive X12 Reference &bull; 100% Client-Side</span>
-    <h1>ASC X12 <code>999</code> &amp; <code>997</code> Error Code Lookup (<code>IK3</code>, <code>IK4</code>, <code>IK5</code>, <code>AK9</code>)</h1>
-    <p class="lead">
-      Filter any <code>IK3-04</code> segment error code, <code>IK4-03</code> element error code, or <code>IK5</code>/<code>AK9</code> acknowledgment status below — plus learn how <code>IK3-02</code> <code>ST</code>-relative segment positions map back to your outbound <code>837</code>, <code>834</code>, <code>270</code>, or <code>850</code> file.
-    </p>
+      <h2 id="lookup-table">Interactive <code>999</code> / <code>997</code> Code Filter</h2>
+<input id="codeSearch" class="search-box" type="search" placeholder="Filter by segment, element, or code (e.g. IK3, IK4, I10, I12, 8, R, E, pattern)..." oninput="filterCodes()">
+<div class="table-wrap">
+  <table id="codeTable">
+    <thead>
+      <tr><th>Coordinate</th><th>Code</th><th>Meaning (Clean-Room CMS 5010 Summary)</th><th>Typical Root Cause in <code>837</code> / <code>834</code> / <code>850</code></th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>AK9-01 / IK5-01</code></td><td><code>A</code></td><td>Accepted</td><td>Transaction or functional group passed syntax and implementation guide checks.</td></tr>
+      <tr><td><code>AK9-01 / IK5-01</code></td><td><code>E</code></td><td>Accepted, But Errors Were Noted</td><td>Non-fatal situational warning; inspect <code>IK3</code>/<code>IK4</code> segments before payer adjudication.</td></tr>
+      <tr><td><code>AK9-01</code></td><td><code>P</code></td><td>Partially Accepted</td><td>At least one <code>ST</code> transaction rejected while sibling <code>ST</code> sets in the <code>GS</code> passed.</td></tr>
+      <tr><td><code>AK9-01 / IK5-01</code></td><td><code>R</code></td><td>Rejected</td><td>Fatal syntax or implementation error; claim batch halted prior to adjudication.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>1</code></td><td>Unrecognized segment ID</td><td>Corrupted segment tag or unescaped terminator inside free-form text.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>2</code></td><td>Unexpected segment</td><td>Segment placed in wrong loop or missing required parent loop trigger segment.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>3</code></td><td>Required segment missing</td><td>Mandatory loop header or child (e.g. <code>SBR</code>, <code>NM1</code>, <code>SV1</code>, <code>DTP</code>) omitted.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>4</code></td><td>Loop occurs over maximum times</td><td>Exceeded companion guide maximum repeat count for the loop in <code>IK3-03</code>.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>5</code></td><td>Segment exceeds maximum use</td><td>Duplicate singleton segment emitted inside the same loop iteration.</td></tr>
+      <tr><td><code>IK3-04 / AK3-04</code></td><td><code>8</code></td><td>Segment has data element errors</td><td>Inspect child <code>IK4</code> segment(s) immediately below for exact element/component index.</td></tr>
+      <tr><td><code>IK3-04</code></td><td><code>I4</code></td><td>Implementation 'Not Used' segment present</td><td>Populated a base X12 segment prohibited by the 005010 implementation guide.</td></tr>
+      <tr><td><code>IK3-04</code></td><td><code>I6</code></td><td>Implementation situational segment missing</td><td>Situational rule triggered (inspect accompanying <code>CTX</code> Situational Trigger segment).</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>1</code></td><td>Required data element missing</td><td>Empty mandatory element between <code>*</code> separators.</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>2</code></td><td>Conditional required data element missing</td><td>Paired syntax rule violated (e.g. <code>NM1-08</code> qualifier present without <code>NM1-09</code> ID).</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>3</code></td><td>Too many data elements</td><td>Extra trailing <code>*</code> or unescaped element separator inside name/street text.</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>4</code></td><td>Data element too short</td><td>Value shorter than minimum AN/ID/N width (e.g. 4-digit ZIP or truncated NPI).</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>5</code></td><td>Data element too long</td><td>Street line (<code>N3-01</code>) &gt; 55 chars or control number exceeds max width.</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>6</code></td><td>Invalid character in data element</td><td>Control byte, smart quote, or non-basic X12 character set symbol.</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>7</code></td><td>Invalid code value</td><td>Unrecognized qualifier in <code>NM1-01</code>, <code>REF-01</code>, <code>CLM-05-1</code>, or <code>SBR-09</code>.</td></tr>
+      <tr><td><code>IK4-03 / AK4-03</code></td><td><code>8</code></td><td>Invalid date</td><td>Non-calendar date in <code>D8</code> (<code>CCYYMMDD</code>) field such as <code>20260229</code>.</td></tr>
+      <tr><td><code>IK4-03</code></td><td><code>I6</code></td><td>Code value not used in implementation</td><td>Valid base X12 code disallowed in this specific 5010 loop.</td></tr>
+      <tr><td><code>IK4-03</code></td><td><code>I9</code></td><td>Implementation dependent data element missing</td><td>Situational field required due to sibling qualifier or claim type.</td></tr>
+      <tr><td><code>IK4-03</code></td><td><code>I10</code></td><td>Implementation 'Not Used' data element present</td><td>Sent data inside a field marked Not Used for this companion guide.</td></tr>
+      <tr><td><code>IK4-03</code></td><td><code>I12</code></td><td>Implementation pattern match failure</td><td>Failed NPI, ZIP, or format pattern check (inspect <code>IK4-04</code> bad data copy).</td></tr>
+    </tbody>
+  </table>
+</div>
+      <h2 id="st-position-math">How <code>IK3-02</code> Segment Position Counting Actually Works</h2>
+<div class="callout callout-warn">
+  <strong>Why Line Numbers Never Match IK3-02</strong>
+  <code>IK3-02</code> is a <strong>1-based segment count starting at <code>ST == 1</code></strong> inside the specific transaction set matched by <code>AK2-02</code> &mdash; ignoring <code>ISA</code>, <code>GS</code>, and every preceding <code>ST..SE</code> block in the file. Plus, single-line production files sit entirely on Line 1.
+</div>
+<pre><code>ISA*00*...~                                    (Ignored by IK3-02)
+GS*HC*...~                                     (Ignored by IK3-02)
+ST*837*0001*005010X222A1~                      &lt;-- Position 1
+BHT*0019*00*BATCH92*20261112*1430*CH~          &lt;-- Position 2
+NM1*41*2*SUBMITTER*****46*SUB01~               &lt;-- Position 3
+PER*IC*EDI DESK*TE*8005550199~                 &lt;-- Position 4
+NM1*40*2*PAYER*****46*PAY01~                   &lt;-- Position 5
+HL*1**20*1~                                    &lt;-- Position 6
+NM1*85*2*CLINIC*****XX*1234567893~             &lt;-- Position 7
+HL*2*1*22*0~                                   &lt;-- Position 8
+SBR*P*18*******CI~                             &lt;-- Position 9
+NM1*IL*1*DOE*JANE****MI*MEM99102~              &lt;-- Position 10
+CLM*PAT01*340.50***11:B:1*Y*A*Y*Y~             &lt;-- Position 11 (IK3*CLM*11*2300*8~ / IK4*5:1*1331*7*99~)</code></pre>
+<p>In <strong>EdiPrism v1.1+</strong>, right-clicking an inbound <code>999</code> file runs the offline <strong>999 Rejection Pinpointer</strong>, jumping your caret directly to segment #11, element <code>CLM-05-1</code> in the outbound <code>837</code> file.</p>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/01-loop-tree-and-inspector.png" alt="ASC X12 999 &amp; 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>What does CTX*SITUATIONAL TRIGGER mean in an X12 999 acknowledgment?</summary><p>When IK3-04 or IK4-03 reports an implementation situational error (such as I6, I9, or I10), the clearinghouse emits a child CTX segment identifying the exact companion-guide segment and element whose value triggered that situational requirement.</p></details>
+        <details class="faq-item"><summary>How do composite positions in IK4-01 work?</summary><p>IK4-01 uses a composite structure: IK4-01-1 is the 1-based element position within the segment, and IK4-01-2 is the 1-based component position inside a composite field. For example, IK4*5:2 points to element 05, subfield 2 (such as CLM-05-2).</p></details>
+      </div>
 
-    <input id="codeSearch" class="search-box" type="search" placeholder="Filter by segment/element or code (e.g. IK3, IK4, I10, I12, 8, R, E)..." oninput="filterCodes()">
 
-    <table id="codeTable">
-      <thead>
-        <tr>
-          <th>Coordinate</th>
-          <th>Code</th>
-          <th>Meaning (Clean-Room CMS 5010 Summary)</th>
-          <th>Typical Root Cause in <code>837</code> / <code>834</code> / <code>850</code></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>A</code></td><td>Accepted</td><td>Transaction / functional group passed syntax &amp; implementation rules.</td></tr>
-        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>E</code></td><td>Accepted, But Errors Were Noted</td><td>Non-fatal situational warning; review <code>IK3</code>/<code>IK4</code> details.</td></tr>
-        <tr><td><code>AK9-01</code></td><td><code>P</code></td><td>Partially Accepted</td><td>At least one <code>ST</code> transaction rejected while sibling <code>ST</code> sets passed.</td></tr>
-        <tr><td><code>AK9-01 / IK5-01</code></td><td><code>R</code></td><td>Rejected</td><td>Fatal syntax or implementation error; inspect all <code>IK3</code>/<code>IK4</code> segments.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>1</code></td><td>Unrecognized segment ID</td><td>Corrupted segment tag or unescaped delimiter inside free-form text.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>2</code></td><td>Unexpected segment</td><td>Segment placed in wrong loop or missing preceding trigger segment.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>3</code></td><td>Required segment missing</td><td>Mandatory loop header/child (e.g. <code>SBR</code>, <code>NM1</code>, <code>SV1</code>) omitted.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>4</code></td><td>Loop occurs over maximum times</td><td>Exceeded max repeat count for loop in companion guide.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>5</code></td><td>Segment exceeds maximum use</td><td>Duplicate singleton segment inside same loop iteration.</td></tr>
-        <tr><td><code>IK3-04 / AK3-04</code></td><td><code>8</code></td><td>Segment has data element errors</td><td>Look immediately at child <code>IK4</code> segment(s) for exact offending field.</td></tr>
-        <tr><td><code>IK3-04</code></td><td><code>I4</code></td><td>Implementation 'Not Used' segment present</td><td>Sent a base X12 segment prohibited by the 5010 companion guide.</td></tr>
-        <tr><td><code>IK3-04</code></td><td><code>I6</code></td><td>Implementation situational segment missing</td><td>Situational rule triggered (check <code>CTX</code> Situational Trigger segment).</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>1</code></td><td>Required data element missing</td><td>Empty mandatory element between <code>*</code> separators.</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>2</code></td><td>Conditional required data element missing</td><td>Paired qualifier present without corresponding value (e.g. <code>NM1-08</code> without <code>NM1-09</code>).</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>3</code></td><td>Too many data elements</td><td>Extra trailing <code>*</code> or unescaped element separator in name/address.</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>4</code></td><td>Data element too short</td><td>Value shorter than minimum AN/ID/N length (e.g. 4-digit ZIP or truncated NPI).</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>5</code></td><td>Data element too long</td><td>Street line (<code>N3</code>) &gt; 55 chars or control number &gt; max length.</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>6</code></td><td>Invalid character in data element</td><td>Non-basic X12 punctuation or control byte inside identifier.</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>7</code></td><td>Invalid code value</td><td>Unrecognized qualifier in <code>NM1-01</code>, <code>REF-01</code>, <code>CLM-05-2</code>, etc.</td></tr>
-        <tr><td><code>IK4-03 / AK4-03</code></td><td><code>8</code></td><td>Invalid date</td><td>Non-calendar date in <code>D8</code> (<code>CCYYMMDD</code>) field such as <code>20260230</code>.</td></tr>
-        <tr><td><code>IK4-03</code></td><td><code>I6</code></td><td>Code value not used in implementation</td><td>Valid base X12 qualifier not permitted in this 5010 loop.</td></tr>
-        <tr><td><code>IK4-03</code></td><td><code>I9</code></td><td>Implementation dependent data element missing</td><td>Situational element required by payer/CMS rule.</td></tr>
-        <tr><td><code>IK4-03</code></td><td><code>I10</code></td><td>Implementation 'Not Used' data element present</td><td>Populated an element marked Not Used in the 5010 guide.</td></tr>
-        <tr><td><code>IK4-03</code></td><td><code>I12</code></td><td>Implementation pattern match failure</td><td>Failed regex/NPI/ZIP/monetary format rule (see <code>IK4-04</code> rejected copy).</td></tr>
-      </tbody>
-    </table>
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
 
-    <h2>How <code>IK3-02</code> Segment Position Counting Actually Works</h2>
-    <p>
-      <code>IK3-02</code> is <strong>never a file line number</strong>. It is a <strong>1-based segment count starting at <code>ST</code> (where <code>ST == 1</code>)</strong> inside the transaction matched by <code>AK2-02</code>:
-    </p>
-<pre><code>ISA*...~        (Ignored by IK3-02)
-GS*...~         (Ignored by IK3-02)
-ST*837*0001*...~  &lt;-- Position 1
-BHT*0019*00*...~  &lt;-- Position 2
-HL*1**20*1~       &lt;-- Position 3
-NM1*85*2*...~     &lt;-- Position 4
-HL*2*1*22*0~      &lt;-- Position 5
-NM1*IL*1*...~     &lt;-- Position 6
-CLM*PAT01*340.50***11:B:1*Y*A*Y*Y~  &lt;-- Position 7 (IK3*CLM*7*2300*8~ / IK4*5:2*... -&gt; 'B')</code></pre>
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#lookup-table">Interactive 999 / 997 Code Filter</a></li>
+          <li><a href="#st-position-math">How IK3-02 Segment Position Counting Actually Works</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
 
-    <div class="cta-box">
-      <h3>Stop Counting <code>ST</code> Segments by Hand</h3>
-      <p><strong>EdiPrism X12 EDIFACT</strong> runs 100% offline inside IntelliJ IDEA, PyCharm, DataGrip, and Rider — mapping <code>999</code> rejections, validating <code>CLM-02</code>/<code>BPR-02</code> totals, and scrubbing HIPAA test fixtures locally.</p>
-      <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install EdiPrism on JetBrains Marketplace &rarr;</a>
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/x12-837-clm02-service-line-balancing.html">837 CLM-02 Service Line Balancing</a></li>
+          <li><a href="/edifact/contrl-uci-ucf-ucm-ucs-syntax-acknowledgment.html">EDIFACT CONTRL Syntax Ack Guide</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276/277 Claim Status STC Codes</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
     </div>
-  </main>
+  </div>
 
   <footer>
-    <p><a href="/">EdiPrism Home</a> &bull; <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace</a> &bull; <a href="https://github.com/EdiPrism/ediprism">GitHub Docs</a></p>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
   </footer>
-
-  <script>
-    function filterCodes() {
-      const q = document.getElementById('codeSearch').value.toLowerCase();
-      const rows = document.querySelectorAll('#codeTable tbody tr');
-      rows.forEach(r => {
-        r.style.display = r.textContent.toLowerCase().includes(q) ? '' : 'none';
-      });
-    }
-  </script>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
 </body>
 </html>
