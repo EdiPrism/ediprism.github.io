@@ -59,15 +59,26 @@
       <h1>Inspect, Decode, Diff, Validate &amp; PCI-Scrub Mainframe <code>EBCDIC</code> &amp; <code>COBOL Copybook</code> Dumps Offline</h1>
       <p class="lead"><strong>EbcdicPrism Copybook Viewer</strong> brings deterministic, 100% local mainframe binary inspection to <strong>IntelliJ IDEA, DataGrip, PyCharm, Rider, GoLand, and WebStorm</strong> &mdash; built for core-banking, card-settlement, insurance, and retail modernization teams barred from uploading raw <code>.ebcdic</code> extracts into web tools.</p>
 
+      <h2 id="install">Install Inside Any JetBrains IDE (2025.1+)</h2>
+<div class="callout callout-sec">
+  <strong>Zero Restart Dynamic Installation &bull; 100% Air-Gapped JVM Execution</strong>
+  Open <strong>Settings / Preferences</strong> (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> / <kbd>Cmd</kbd>+<kbd>,</kbd>) &rarr; <strong>Plugins</strong> &rarr; <strong>Marketplace</strong> &rarr; search <strong><code>EbcdicPrism Copybook Viewer</code></strong> &rarr; click <strong>Install</strong>.
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 24px;">
+  <a class="btn btn-sm" href="https://github.com/EdiPrism/ebcdicprism">GitHub Documentation &amp; Quickstart &rarr;</a>
+  <a class="btn btn-sm btn-outline" href="https://github.com/EdiPrism/ebcdicprism/issues">Issue Tracker &amp; Feature Requests</a>
+  <a class="btn btn-sm btn-outline" href="/privacy.html">Air-Gapped Privacy Attestation</a>
+  <a class="btn btn-sm btn-outline" href="/eula.html">End-User License Agreement</a>
+</div>
       <h2 id="free-vs-pro">Free Tier vs. <code>[Pro]</code> Mainframe Workbench</h2>
 <div class="table-wrap">
   <table>
     <thead><tr><th>Mainframe Engineering Capability</th><th>Free Tier</th><th><code>[Pro]</code> (14-Day Trial)</th></tr></thead>
     <tbody>
-      <tr><td><strong>COBOL Copybook (<code>.cpy</code>) Highlighting &amp; Hover Offset Calculator</strong> (1-based &amp; 0-based byte slices + total <code>01</code> <code>LRECL</code>)</td><td class="yes">Included</td><td class="yes">Included</td></tr>
-      <tr><td><strong>Stream-Paged Multi-Codepage Hex + EBCDIC Viewer</strong> (<code>IBM037</code>, <code>IBM1047</code>, <code>IBM500</code>, <code>IBM273</code>, <code>IBM285</code>, <code>IBM297</code>, <code>IBM01140</code>)</td><td class="yes">Included</td><td class="yes">Included</td></tr>
+      <tr><td><strong>COBOL Copybook (<code>.cpy</code>) Highlighting, Inline Offset Pills &amp; Hover Cards</strong> (1-based &amp; 0-based byte slices + total <code>01</code> <code>LRECL</code>)</td><td class="yes">Included</td><td class="yes">Included</td></tr>
+      <tr><td><strong>Searchable (<code>Ctrl+F</code>) Multi-Codepage Hex + EBCDIC Viewer</strong> (<code>IBM037</code>, <code>IBM1047</code>, <code>IBM500</code>, <code>IBM273</code>, <code>IBM285</code>, <code>IBM297</code>, <code>IBM01140</code>)</td><td class="yes">Included</td><td class="yes">Included</td></tr>
       <tr><td><strong>Fixed-Block (<code>FB</code>) &amp; Variable-Blocked 4-Byte <code>RDW</code> (<code>VB</code>) Auto-Detector</strong></td><td class="yes">Included</td><td class="yes">Included</td></tr>
-      <tr><td><strong>Copybook-Over-Binary Record Decoder</strong> (<code>COMP-3</code>, Zoned Overpunch <code>{A-I</code>/<code>}J-R</code>, Big-Endian <code>COMP</code>, <code>REDEFINES</code>, <code>88</code>-Flags)</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
+      <tr><td><strong>Copybook-Over-Binary Record Decoder &amp; Byte-to-<code>PIC</code> Hover Cards</strong> (<code>COMP-3</code>, Zoned Overpunch <code>{A-I</code>/<code>}J-R</code>, Big-Endian <code>COMP</code>, <code>REDEFINES</code>, <code>88</code>-Flags)</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
       <tr><td><strong>Batch <code>S0C7</code> Invalid Nibble &amp; Broken <code>RDW</code>/<code>LRECL</code> Pinpointer</strong></td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
       <tr><td><strong>Semantic Binary Diff (<code>Alt+Shift+B</code> &amp; <code>Ctrl+D</code>)</strong> Masking Volatile Batch Timestamps</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
       <tr><td><strong>Deterministic Offline PCI-DSS Binary PAN (Luhn-Valid) &amp; PII Scrubber (<code>Alt+Shift+R</code>)</strong> + SQL <code>CREATE TABLE</code> / JSON / CSV Export</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
@@ -91,13 +102,13 @@
 
 
       <div class="cta-box">
-        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <h3>Inspect, Decode, Diff &amp; PCI-Scrub Mainframe Dumps Offline in Your JetBrains IDE</h3>
         <p style="margin-bottom:16px;">
-          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+          Never upload regulated banking, card-network, or insurance <code>.ebcdic</code> extracts or proprietary <code>.cpy</code> schemas into browser hex viewers. <strong>EbcdicPrism Copybook Viewer</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, DataGrip, PyCharm, Rider, GoLand, and WebStorm</strong> with a forever-free core tier and a 14-day <code>[Pro]</code> trial.
         </p>
         <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
-          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+          <a class="btn" href="/cobol/#install">Install EbcdicPrism in JetBrains IDE &rarr;</a>
+          <a class="btn btn-outline" href="https://github.com/EdiPrism/ebcdicprism">GitHub Docs &amp; Issue Tracker</a>
         </div>
       </div>
     </main>
@@ -106,6 +117,7 @@
       <div class="side-box">
         <h4>On This Page</h4>
         <ul class="side-list">
+          <li><a href="#install">Install Inside Any JetBrains IDE (2025.1+)</a></li>
           <li><a href="#free-vs-pro">Free Tier vs. [Pro] Mainframe Workbench</a></li>
           <li><a href="#cobol-guides">Mainframe Binary &amp; Copybook Engineering Guides</a></li>
           <li><a href="#faq">Frequently Asked Questions</a></li>
@@ -122,11 +134,11 @@
         </ul>
       </div>
       <div class="side-box side-cta">
-        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <h4 style="color:#7dd3fc;">100% Air-Gapped Mainframe Plugin</h4>
         <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
-          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+          Calculate <code>.cpy</code> byte offsets, decode <code>IBM037</code>/<code>COMP-3</code> overlays, pinpoint <code>S0C7</code> nibbles, and scrub Luhn-valid PCI PANs locally.
         </p>
-        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+        <a class="btn btn-sm" style="width:100%;" href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs &amp; Issues</a>
       </div>
     </aside>
   </div>
@@ -189,24 +201,28 @@
       <div class="footer-col">
         <h4>IDEs &amp; Trust</h4>
         <ul>
-          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
-          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
-          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
-          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
-          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
-          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip &amp; Rider</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-legal">
       <p style="margin:0 0 6px;">
-        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
-        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
-        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="/cobol/">EbcdicPrism Copybook Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
         <a href="/sitemap.xml">XML Sitemap</a>
       </p>
       <p style="margin:0;">
-        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+        X12 is a registered trademark of X12 Incorporated. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism and EbcdicPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, or JetBrains s.r.o.
       </p>
     </div>
   </footer>

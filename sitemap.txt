@@ -15,6 +15,7 @@ https://ediprism.github.io/edifact/invoic-commercial-invoice-moa-tax-alc.html
 https://ediprism.github.io/edifact/orders-purchase-order-bgm-lin-uns.html
 https://ediprism.github.io/edifact/ordrsp-order-response-line-status.html
 https://ediprism.github.io/edifact/una-unb-unh-unt-unz-envelope-syntax.html
+https://ediprism.github.io/eula.html
 https://ediprism.github.io/fix-x12-isa-106-characters.html
 https://ediprism.github.io/guides/carc-rarc-835-cas-group-codes-lookup.html
 https://ediprism.github.io/guides/convert-export-x12-edifact-to-json-csv-offline.html
@@ -32,7 +33,9 @@ https://ediprism.github.io/ide/intellij-idea-java-kotlin-edi-staedi-workflow.htm
 https://ediprism.github.io/ide/pycharm-python-x12-edifact-pytest-fixtures.html
 https://ediprism.github.io/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html
 https://ediprism.github.io/ide/vs-online-edi-parsers-hipaa-baa-risk.html
+https://ediprism.github.io/privacy.html
 https://ediprism.github.io/security-air-gap.html
+https://ediprism.github.io/support.html
 https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html
 https://ediprism.github.io/x12/276-277-claim-status-stc-codes.html
 https://ediprism.github.io/x12/278-prior-authorization-um-hierarchy.html

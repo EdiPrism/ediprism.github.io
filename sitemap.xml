@@ -17,6 +17,7 @@
   <url><loc>https://ediprism.github.io/edifact/orders-purchase-order-bgm-lin-uns.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/edifact/ordrsp-order-response-line-status.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/edifact/una-unb-unh-unt-unz-envelope-syntax.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/eula.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/fix-x12-isa-106-characters.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/guides/carc-rarc-835-cas-group-codes-lookup.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/guides/convert-export-x12-edifact-to-json-csv-offline.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
@@ -34,7 +35,9 @@
   <url><loc>https://ediprism.github.io/ide/pycharm-python-x12-edifact-pytest-fixtures.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/ide/vs-online-edi-parsers-hipaa-baa-risk.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/privacy.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/security-air-gap.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/support.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/x12/270-271-eligibility-benefit-inquiry-response.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/x12/276-277-claim-status-stc-codes.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/x12/278-prior-authorization-um-hierarchy.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>

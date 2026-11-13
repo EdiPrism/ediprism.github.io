@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="stylesheet" href="/styles.css">
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Release Notes, Keyboard Shortcuts & IDE Action Reference — EdiPrism","description":"Keyboard shortcuts, editor actions, and release changelog for EdiPrism X12 EDIFACT across IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm.","url":"https://ediprism.github.io/changelog-and-roadmap.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"Docs Hub","item":"https://ediprism.github.io/docs/"},{"@type":"ListItem","position":3,"name":"Release Notes, Keyboard Shortcuts & IDE Action Reference — EdiPrism","item":"https://ediprism.github.io/changelog-and-roadmap.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I update EdiPrism inside IntelliJ IDEA, PyCharm, or DataGrip?","acceptedAnswer":{"@type":"Answer","text":"Open Settings -> Plugins -> Installed, locate EdiPrism X12 EDIFACT, and click Update."}}]}]}
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Release Notes, Keyboard Shortcuts & IDE Action Reference — EdiPrism","description":"Keyboard shortcuts, editor actions, and release changelog for EdiPrism X12 EDIFACT across IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm.","url":"https://ediprism.github.io/changelog-and-roadmap.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"Docs Hub","item":"https://ediprism.github.io/docs/"},{"@type":"ListItem","position":3,"name":"Release Notes, Keyboard Shortcuts & IDE Action Reference — EdiPrism","item":"https://ediprism.github.io/changelog-and-roadmap.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I update EdiPrism or EbcdicPrism inside IntelliJ IDEA, PyCharm, or DataGrip?","acceptedAnswer":{"@type":"Answer","text":"Open Settings -> Plugins -> Installed, locate EdiPrism X12 EDIFACT or EbcdicPrism Copybook Viewer, and click Update."}}]}]}
   </script>
 </head>
 <body>
@@ -75,19 +75,24 @@
   </table>
 </div>
       <h2 id="releases">Version History</h2>
-<h3>v1.1 &mdash; Unfair Workflow Moat Pack</h3>
+<h3>EbcdicPrism Copybook Viewer v1.0.0 &mdash; Mainframe COBOL &amp; EBCDIC Release</h3>
+<ul>
+  <li><strong>COBOL Copybook (<code>.cpy</code>) Offset Pills &amp; Hover Cards (Free):</strong> Instant 1-based &amp; 0-based byte offsets, total <code>LRECL</code>, <code>COMP-3</code> widths, and <code>REDEFINES</code> unions, plus searchable (<code>Ctrl+F</code>) 7-codepage <code>.ebcdic</code> dump viewer.</li>
+  <li><strong><code>[Pro]</code> Record Overlay, <code>S0C7</code> Pinpointer, Semantic Diff (<code>Alt+Shift+B</code>) &amp; PCI PAN Scrubber (<code>Alt+Shift+R</code>):</strong> Full offline mainframe workbench across all JetBrains IDEs (<a href="/cobol/">Product Hub</a> &bull; <a href="https://github.com/EdiPrism/ebcdicprism">GitHub Docs</a>).</li>
+</ul>
+<h3>EdiPrism X12 EDIFACT v1.1 &mdash; Unfair Workflow Moat Pack</h3>
 <ul>
   <li><strong>Inbound <code>999</code> Rejection Pinpointer:</strong> Maps <code>AK2</code>/<code>IK3</code>/<code>IK4</code> coordinates directly to exact outbound <code>837</code>/<code>834</code>/<code>270</code>/<code>850</code> segments and composite sub-elements.</li>
   <li><strong>1-Click Batch Test-Fixture Slicer (<code>Alt+Shift+X</code>):</strong> Slices a single rejected <code>CLM</code>, <code>CLP</code>, <code>PO1</code>, or <code>LIN</code> unit out of multi-megabyte batches with valid envelopes.</li>
   <li><strong>Native Loop Code Folding &amp; Trading-Partner Profiles:</strong> Fold nested <code>2000A/B/C</code>, <code>2300</code>, and <code>2400</code> loops directly in the editor gutter and auto-detect partner sender/receiver profiles.</li>
 </ul>
-<h3>v1.0.0 &mdash; Initial JetBrains Marketplace Release (<code>#35990</code>)</h3>
+<h3>EdiPrism X12 EDIFACT v1.0.0 &mdash; Initial JetBrains Marketplace Release (<code>#35990</code>)</h3>
 <ul>
   <li>Lenient <code>&lt;106</code>-byte <code>ISA</code> &amp; <code>UNA</code> pre-normalizer, incremental syntax lexer, hover coordinate tooltips, hierarchical <code>HL</code> &amp; loop tree, semantic <code>Ctrl+D</code> diff, offline <code>BigDecimal</code> balancing validator, deterministic HIPAA scrubber, and <code>BYOS</code> <code>StAEDI</code> XML/JSON export.</li>
 </ul>
       <h2 id="faq">Frequently Asked Engineering Questions</h2>
       <div class="faq-list">
-        <details class="faq-item"><summary>How do I update EdiPrism inside IntelliJ IDEA, PyCharm, or DataGrip?</summary><p>Open Settings -&gt; Plugins -&gt; Installed, locate EdiPrism X12 EDIFACT, and click Update.</p></details>
+        <details class="faq-item"><summary>How do I update EdiPrism or EbcdicPrism inside IntelliJ IDEA, PyCharm, or DataGrip?</summary><p>Open Settings -&gt; Plugins -&gt; Installed, locate EdiPrism X12 EDIFACT or EbcdicPrism Copybook Viewer, and click Update.</p></details>
       </div>
 
 
@@ -117,7 +122,7 @@
         <h4>Related Engineering Guides</h4>
         <ul class="side-list">
           <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Code Lookup</a></li>
-          <li><a href="/guides/split-slice-large-837-835-edi-batch-files.html">50 MB Batch Claim Slicer Guide</a></li>
+          <li><a href="/cobol/">EbcdicPrism Mainframe Hub</a></li>
           <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
 
         </ul>
@@ -190,24 +195,28 @@
       <div class="footer-col">
         <h4>IDEs &amp; Trust</h4>
         <ul>
-          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
-          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
-          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
-          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
-          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
-          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip &amp; Rider</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-legal">
       <p style="margin:0 0 6px;">
-        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
-        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
-        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="/cobol/">EbcdicPrism Copybook Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
         <a href="/sitemap.xml">XML Sitemap</a>
       </p>
       <p style="margin:0;">
-        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+        X12 is a registered trademark of X12 Incorporated. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism and EbcdicPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, or JetBrains s.r.o.
       </p>
     </div>
   </footer>

@@ -1,11 +1,16 @@
-# EdiPrism — 100% Offline ASC X12 & UN/EDIFACT Plugin for JetBrains IDEs
+# EdiPrism — 100% Offline Enterprise Data-Format Plugins for JetBrains IDEs
 
-> EdiPrism X12 EDIFACT (JetBrains Marketplace #35990: https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact) is a deterministic, 100% air-gapped / offline B2B EDI inspector, hierarchical HL & loop tree viewer, semantic Ctrl+D diff, BigDecimal financial balancing validator, inbound 999 rejection pinpointer, and HIPAA Safe Harbor test-fixture scrubber for IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm. Zero cloud calls, zero telemetry.
+> EdiPrism builds deterministic, 100% air-gapped / offline B2B data-format inspectors, semantic Ctrl+D diffs, validators, and test-fixture scrubbers for IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm (zero cloud calls, zero telemetry):
+> 1. **EdiPrism X12 EDIFACT** (JetBrains Marketplace #35990: https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact) — ASC X12 & UN/EDIFACT loop tree, semantic diff, BigDecimal balancing, 999 pinpointer, and HIPAA Safe Harbor scrubber.
+> 2. **EbcdicPrism Copybook Viewer** (https://ediprism.github.io/cobol/) — Mainframe COBOL Copybook (.cpy) byte-offset calculator, multi-codepage EBCDIC & COMP-3 Packed Decimal record decoder, S0C7 validator, semantic binary diff, and offline PCI-DSS Luhn PAN scrubber.
 
 ## Official Links
-- [Product Overview](https://ediprism.github.io/): Features, Free vs Pro matrix, and interactive synthetic 837P coordinate demo.
-- [JetBrains Marketplace Listing](https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact): Install Free Tier or 14-day Pro trial in any JetBrains IDE.
-- [GitHub Documentation & Issue Tracker](https://github.com/EdiPrism/ediprism): Public docs, EULA, and 100% offline privacy policy.
+- [EdiPrism Portal & Overview](https://ediprism.github.io/): Features, Free vs Pro matrix, and interactive synthetic 837P coordinate demo.
+- [EdiPrism X12 EDIFACT on JetBrains Marketplace](https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact): Install Free Tier or 14-day Pro trial.
+- [EbcdicPrism COBOL & EBCDIC Hub](https://ediprism.github.io/cobol/): Mainframe Copybook, COMP-3, S0C7, and PCI-DSS scrubber reference.
+- [EdiPrism GitHub Docs & Issues](https://github.com/EdiPrism/ediprism): Public X12/EDIFACT docs and issue tracker.
+- [EbcdicPrism GitHub Docs & Issues](https://github.com/EdiPrism/ebcdicprism): Public COBOL/EBCDIC docs and issue tracker.
+- [Support, EULA & Air-Gap Privacy](https://ediprism.github.io/support.html): Official support hub, EULA (https://ediprism.github.io/eula.html), and zero-telemetry privacy policy (https://ediprism.github.io/privacy.html).
 
 ## Technical Reference Guides & Interactive Lookup Tables
 - [EDI Engineering Documentation, X12 & EDIFACT Reference Guides](https://ediprism.github.io/docs/): Searchable 45+ guide engineering reference for ASC X12 (837, 835, 270/271, 834, 850, 856, 810, 999), UN/EDIFACT (ORDERS, DESADV, INVOIC, CONTRL), HIPAA scrubbing, and offline JetBrains IDE workflows.
@@ -13,6 +18,9 @@
 - [UN/EDIFACT Messages, UNA/UNB Envelopes & Segment Groups Hub (D.96A / D.01B)](https://ediprism.github.io/edifact/): Developer reference for UN/EDIFACT UNA service string advice, UNB/UNH/UNT/UNZ envelopes, ?' release character escaping, and ORDERS, DESADV, INVOIC, ORDRSP, CONTRL, and DELFOR messages.
 - [100% Air-Gapped & Offline Security Architecture (HIPAA, PCI-DSS & Zero Telemetry)](https://ediprism.github.io/security-air-gap.html): Enterprise security architecture overview for EdiPrism X12 EDIFACT: zero outbound network sockets, zero cloud or LLM APIs, local JVM execution, offline RSA license verification, and keyed HmacSHA256 PII scrubbing.
 - [Release Notes, Keyboard Shortcuts & IDE Action Reference](https://ediprism.github.io/changelog-and-roadmap.html): Keyboard shortcuts, editor actions, and release changelog for EdiPrism X12 EDIFACT across IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm.
+- [End-User License Agreement (EULA) — EdiPrism & EbcdicPrism JetBrains Plugins](https://ediprism.github.io/eula.html): Official End-User License Agreement (EULA) for EdiPrism X12 EDIFACT (PEDIPRISM) and EbcdicPrism Copybook Viewer (PEBCDICPRISM) software plugins for JetBrains IDEs.
+- [Privacy Policy & Air-Gapped Zero-Telemetry Attestation — EdiPrism & EbcdicPrism](https://ediprism.github.io/privacy.html): Official Privacy Policy for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer: zero outbound network calls, zero payload transmission, zero telemetry, and offline JetBrains RSA license verification.
+- [Support, Bug Trackers & Enterprise Procurement — EdiPrism & EbcdicPrism](https://ediprism.github.io/support.html): Official bug trackers, feature request channels, HIPAA/PCI-safe bug reporting steps, and JetBrains Marketplace enterprise licensing support for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer.
 - [ASC X12 999 & 997 IK3 / IK4 / IK5 / AK9 Error Code Lookup Table](https://ediprism.github.io/x12-999-ik3-ik4-error-codes.html): Instant searchable lookup table for ASC X12 999 and 997 Implementation Acknowledgment codes (IK3-04 segment syntax errors, IK4-03 data element errors, IK5/AK9 dispositions) and how IK3-02 ST-relative segment positions map to 837, 834, 270, and 850 files.
 - [ASC X12 837 Claim Balancing (CLM-02 == SV1 / SV2 / SV3) & Orphan HL Guide](https://ediprism.github.io/x12-837-clm02-service-line-balancing.html): Prevent clearinghouse and 277CA front-end rejections by validating CLM-02 == sum(SV1-02 / SV2-03 / SV3-02) with exact BigDecimal math and verifying 2000A/2000B/2000C HL parent pointers.
 - [ASC X12 835 ERA Balancing Guide (BPR-02, CLP-04, CAS & PLB Sign Inversion)](https://ediprism.github.io/x12-835-bpr02-clp04-plb-balancing.html): Master the three-tier financial reconciliation equations in ASC X12 835 Electronic Remittance Advice files, including SVC line adjustments, CLP claim totals, and inverted PLB provider-level adjustments.

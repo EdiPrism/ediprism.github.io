@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy &amp; Air-Gapped Zero-Telemetry Attestation — EdiPrism &amp; EbcdicPrism</title>
+  <meta name="description" content="Official Privacy Policy for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer: zero outbound network calls, zero payload transmission, zero telemetry, and offline JetBrains RSA license verification.">
+  <link rel="canonical" href="https://ediprism.github.io/privacy.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="Privacy Policy &amp; Air-Gapped Zero-Telemetry Attestation — EdiPrism &amp; EbcdicPrism">
+  <meta property="og:description" content="Official Privacy Policy for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer: zero outbound network calls, zero payload transmission, zero telemetry, and offline JetBrains RSA license verification.">
+  <meta property="og:url" content="https://ediprism.github.io/privacy.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy Policy &amp; Air-Gapped Zero-Telemetry Attestation — EdiPrism &amp; EbcdicPrism">
+  <meta name="twitter:description" content="Official Privacy Policy for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer: zero outbound network calls, zero payload transmission, zero telemetry, and offline JetBrains RSA license verification.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Privacy Policy & Air-Gapped Zero-Telemetry Attestation — EdiPrism & EbcdicPrism","description":"Official Privacy Policy for EdiPrism X12 EDIFACT and EbcdicPrism Copybook Viewer: zero outbound network calls, zero payload transmission, zero telemetry, and offline JetBrains RSA license verification.","url":"https://ediprism.github.io/privacy.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"Docs Hub","item":"https://ediprism.github.io/docs/"},{"@type":"ListItem","position":3,"name":"Privacy Policy & Air-Gapped Zero-Telemetry Attestation — EdiPrism & EbcdicPrism","item":"https://ediprism.github.io/privacy.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does EdiPrism require a HIPAA Business Associate Agreement (BAA) or PCI-DSS third-party processor review?","acceptedAnswer":{"@type":"Answer","text":"No. Because our plugins execute strictly in-memory on your own workstation with zero network egress, EdiPrism never receives, stores, processes, or transmits PHI or cardholder data."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/docs/">Docs Hub</a> <span>/</span>
+        <span>Privacy &amp; Zero Telemetry</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">Privacy &amp; Zero Telemetry</span>
+      </div>
+      <h1>Privacy Policy &amp; 100% Air-Gapped Security Attestation</h1>
+      <p class="lead">Both <strong>EdiPrism X12 EDIFACT</strong> and <strong>EbcdicPrism Copybook Viewer</strong> execute <strong>100% locally and offline</strong> inside your JetBrains IDE JVM process with zero external network sockets.</p>
+
+      <h2 id="zero-collection">1. Zero Data Collection, Zero Cloud &amp; Zero Telemetry</h2>
+<div class="callout callout-sec">
+  <strong>Strict Zero-Egress Guarantee</strong>
+  Neither <strong>EdiPrism X12 EDIFACT</strong> nor <strong>EbcdicPrism Copybook Viewer</strong> contains HTTP clients, cloud SDKs, LLM API connectors, crash uploaders, or analytics beacons.
+</div>
+<ul>
+  <li><strong>Zero Payload Transmission:</strong> Healthcare claims (<code>837</code>/<code>835</code>/<code>271</code>), supply-chain interchanges (<code>850</code>/<code>ORDERS</code>), COBOL Copybooks (<code>.cpy</code>), binary <code>EBCDIC</code>/<code>COMP-3</code> mainframe datasets (<code>.ebcdic</code>/<code>.ebc</code>), SQL DDL exports, and scrubbed test fixtures <strong>never leave your workstation</strong>.</li>
+  <li><strong>Zero Telemetry:</strong> No usage counters, file names, schema structures, IP addresses, or device identifiers are collected by EdiPrism.</li>
+  <li><strong>Static Documentation Portal:</strong> This documentation website (<code>ediprism.github.io</code>) is static HTML/CSS/JS hosted on GitHub Pages with client-side search and zero ad-tracking cookies.</li>
+</ul>
+      <h2 id="licensing-privacy">2. Offline License Verification via JetBrains Marketplace</h2>
+<p>Commercial <code>[Pro]</code> subscriptions and 14-day free trials are fulfilled directly by <strong>JetBrains Marketplace (<code>JetBrains s.r.o.</code>)</strong> as Merchant of Record and verified locally inside your IDE via <code>LicensingFacade</code> using pinned JetBrains X.509 RSA root certificates &mdash; requiring zero phone-home callbacks to EdiPrism servers.</p>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Does EdiPrism require a HIPAA Business Associate Agreement (BAA) or PCI-DSS third-party processor review?</summary><p>No. Because our plugins execute strictly in-memory on your own workstation with zero network egress, EdiPrism never receives, stores, processes, or transmits PHI or cardholder data.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#zero-collection">1. Zero Data Collection, Zero Cloud &amp; Zero Telemetry</a></li>
+          <li><a href="#licensing-privacy">2. Offline License Verification via JetBrains Marketplace</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/security-air-gap.html">Air-Gap Security Deep Dive</a></li>
+          <li><a href="/eula.html">End-User License Agreement</a></li>
+          <li><a href="/support.html">Support & Issue Tracker</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip &amp; Rider</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="/cobol/">EbcdicPrism Copybook Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism and EbcdicPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
