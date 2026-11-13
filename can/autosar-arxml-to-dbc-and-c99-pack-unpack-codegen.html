@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Convert AUTOSAR 4.x .arxml to Vector .dbc &amp; Clean-Room C99 Codecs Offline — EdiPrism</title>
+  <meta name="description" content="How streaming StAX parsing resolves AUTOSAR 4.x CAN-FRAME-TRIGGERING, I-SIGNAL-I-PDU, I-SIGNAL, and COMPU-METHOD cross-references into flat .dbc files and zero-dependency C99 pack/unpack headers.">
+  <link rel="canonical" href="https://ediprism.github.io/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="Convert AUTOSAR 4.x .arxml to Vector .dbc &amp; Clean-Room C99 Codecs Offline — EdiPrism">
+  <meta property="og:description" content="How streaming StAX parsing resolves AUTOSAR 4.x CAN-FRAME-TRIGGERING, I-SIGNAL-I-PDU, I-SIGNAL, and COMPU-METHOD cross-references into flat .dbc files and zero-dependency C99 pack/unpack headers.">
+  <meta property="og:url" content="https://ediprism.github.io/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Convert AUTOSAR 4.x .arxml to Vector .dbc &amp; Clean-Room C99 Codecs Offline — EdiPrism">
+  <meta name="twitter:description" content="How streaming StAX parsing resolves AUTOSAR 4.x CAN-FRAME-TRIGGERING, I-SIGNAL-I-PDU, I-SIGNAL, and COMPU-METHOD cross-references into flat .dbc files and zero-dependency C99 pack/unpack headers.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Convert AUTOSAR 4.x .arxml to Vector .dbc & Clean-Room C99 Codecs Offline — EdiPrism","description":"How streaming StAX parsing resolves AUTOSAR 4.x CAN-FRAME-TRIGGERING, I-SIGNAL-I-PDU, I-SIGNAL, and COMPU-METHOD cross-references into flat .dbc files and zero-dependency C99 pack/unpack headers.","url":"https://ediprism.github.io/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"CAN & AUTOSAR Hub","item":"https://ediprism.github.io/can/"},{"@type":"ListItem","position":3,"name":"Convert AUTOSAR 4.x .arxml to Vector .dbc & Clean-Room C99 Codecs Offline — EdiPrism","item":"https://ediprism.github.io/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Can CanPrism diff two AUTOSAR .arxml versions without thousands of UUID line conflicts?","acceptedAnswer":{"@type":"Answer","text":"Yes. Pressing Alt+Shift+B or Ctrl+D runs Semantic Network Diff, which flattens both .arxml files by CAN ID and bit layout while ignoring XML UUIDs, timestamps, and element ordering."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/can/">CAN &amp; AUTOSAR</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/can/">CAN &amp; AUTOSAR Hub</a> <span>/</span>
+        <span>AUTOSAR &amp; C99 Codegen</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">AUTOSAR &amp; C99 Codegen</span>
+      </div>
+      <h1>Flattening <code>AUTOSAR 4.x .arxml</code> to <code>.dbc</code> &amp; MISRA-Friendly <code>C99</code> Codecs Offline</h1>
+      <p class="lead">OEM AUTOSAR <code>.arxml</code> network extracts routinely span tens of megabytes of deeply cross-referenced XML elements &mdash; making code review, HIL log decoding, and embedded C struct generation painful without heavy proprietary toolchains.</p>
+
+      <h2 id="arxml-chain">1. The 5-Hop AUTOSAR <code>.arxml</code> Reference Chain</h2>
+<p>To reconstruct a single flat CAN signal from an AUTOSAR 4.x extract, a parser must join five decoupled XML entities by <code>SHORT-NAME</code> path:</p>
+<ol>
+  <li><code>CAN-FRAME-TRIGGERING</code> &rarr; <code>IDENTIFIER</code>, <code>CAN-ADDRESSING-MODE</code> (<code>STANDARD</code> 11-bit vs. <code>EXTENDED</code> 29-bit), and <code>CAN-FD-FRAME-SUPPORT</code>.</li>
+  <li><code>CAN-FRAME</code> &rarr; <code>FRAME-LENGTH</code> (<code>DLC</code> up to <code>64</code> bytes) and <code>PDU-TO-FRAME-MAPPING</code>.</li>
+  <li><code>I-SIGNAL-I-PDU</code> &rarr; <code>I-SIGNAL-TO-PDU-MAPPINGS</code> (<code>START-POSITION</code> &amp; <code>PACKING-BYTE-ORDER</code>).</li>
+  <li><code>I-SIGNAL</code> / <code>SYSTEM-SIGNAL</code> &rarr; bit <code>LENGTH</code>, base integer/float type, and unit reference.</li>
+  <li><code>COMPU-METHOD</code> &rarr; <code>COMPU-RATIONAL-COEFFS</code> linear scaling (<code>phys = raw * factor + offset</code>) and <code>TEXTTABLE</code> enum states.</li>
+</ol>
+      <h2 id="c99-export">2. Zero-Dependency Embedded <code>C99</code> Pack/Unpack Header Generation</h2>
+<p>In <strong>CanPrism</strong> (<code>Export &amp; C99</code> tab), clicking <strong><code>C99 (.h)</code></strong> or <strong><code>DBC</code></strong> flattens any <code>.dbc</code> or <code>.arxml</code> schema 100% offline into either a canonical Vector <code>.dbc</code> file or a self-contained <code>&lt;stdint.h&gt;</code> header with sign-extension-safe bit extraction and physical scaling helpers.</p>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/can/05-c99-codec-arxml-dbc-and-nda-scrubber.png" alt="Convert AUTOSAR 4.x .arxml to Vector .dbc &amp; Clean-Room C99 Codecs Offline — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Can CanPrism diff two AUTOSAR .arxml versions without thousands of UUID line conflicts?</summary><p>Yes. Pressing Alt+Shift+B or Ctrl+D runs Semantic Network Diff, which flattens both .arxml files by CAN ID and bit layout while ignoring XML UUIDs, timestamps, and element ordering.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Validate, Diff, Decode &amp; Scrub CAN / AUTOSAR Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste OEM NDA <code>.dbc</code> or <code>AUTOSAR .arxml</code> signal matrices into browser viewers. <strong>CanPrism DBC ARXML Viewer</strong> runs 100% air-gapped inside <strong>CLion, PyCharm, RustRover, IntelliJ IDEA, Rider, DataGrip, GoLand, and WebStorm</strong> with a forever-free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="/can/#install">Install CanPrism in JetBrains IDE &rarr;</a>
+          <a class="btn btn-outline" href="https://github.com/EdiPrism/canprism">GitHub Docs &amp; Issue Tracker</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#arxml-chain">1. The 5-Hop AUTOSAR .arxml Reference Chain</a></li>
+          <li><a href="#c99-export">2. Zero-Dependency Embedded C99 Pack/Unpack Header Generation</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/can/">CanPrism Product Hub</a></li>
+          <li><a href="/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html">Motorola @0 vs. Intel @1 Bit Math</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped CAN &amp; AUTOSAR Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Visualize 64-bit Motorola/Intel bit matrices, pinpoint bit overlaps, decode <code>candump</code>/<code>.asc</code> logs, and generate <code>C99</code> codecs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://github.com/EdiPrism/canprism">CanPrism Docs &amp; Issues</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/can/">CanPrism (CAN &amp; AUTOSAR)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="/cobol/">EbcdicPrism Copybook Viewer</a> &bull;
+        <a href="/can/">CanPrism DBC ARXML Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/canprism">CanPrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. AUTOSAR is a registered trademark of the AUTOSAR Development Partnership. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, CLion, RustRover, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism, EbcdicPrism, and CanPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, Vector Informatik GmbH, SAE International, AUTOSAR, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

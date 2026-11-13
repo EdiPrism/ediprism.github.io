@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://ediprism.github.io/</loc><lastmod>2026-11-13</lastmod><priority>1.0</priority></url>
+  <url><loc>https://ediprism.github.io/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/can/</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
+  <url><loc>https://ediprism.github.io/can/sae-j1939-29-bit-can-id-to-pgn-decoding.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/changelog-and-roadmap.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/cobol/cobol-copybook-redefines-occurs-offsets.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>
   <url><loc>https://ediprism.github.io/cobol/comp-3-packed-decimal-byte-length.html</loc><lastmod>2026-11-13</lastmod><priority>0.8</priority></url>

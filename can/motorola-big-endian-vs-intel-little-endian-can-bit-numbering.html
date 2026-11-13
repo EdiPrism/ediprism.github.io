@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism</title>
+  <meta name="description" content="Exact Vector DBC bit-numbering formulas for Intel Little-Endian (@1 LSB-start) vs. Motorola Big-Endian (@0 MSB-start sawtooth byte-boundary wrap), with worked bit-collision examples.">
+  <link rel="canonical" href="https://ediprism.github.io/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism">
+  <meta property="og:description" content="Exact Vector DBC bit-numbering formulas for Intel Little-Endian (@1 LSB-start) vs. Motorola Big-Endian (@0 MSB-start sawtooth byte-boundary wrap), with worked bit-collision examples.">
+  <meta property="og:url" content="https://ediprism.github.io/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism">
+  <meta name="twitter:description" content="Exact Vector DBC bit-numbering formulas for Intel Little-Endian (@1 LSB-start) vs. Motorola Big-Endian (@0 MSB-start sawtooth byte-boundary wrap), with worked bit-collision examples.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism","description":"Exact Vector DBC bit-numbering formulas for Intel Little-Endian (@1 LSB-start) vs. Motorola Big-Endian (@0 MSB-start sawtooth byte-boundary wrap), with worked bit-collision examples.","url":"https://ediprism.github.io/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"CAN & AUTOSAR Hub","item":"https://ediprism.github.io/can/"},{"@type":"ListItem","position":3,"name":"Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism","item":"https://ediprism.github.io/can/motorola-big-endian-vs-intel-little-endian-can-bit-numbering.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How does AUTOSAR ARXML PACKING-BYTE-ORDER map to DBC @0 and @1?","acceptedAnswer":{"@type":"Answer","text":"AUTOSAR MOST-SIGNIFICANT-BYTE-FIRST maps to Motorola Big-Endian (@0) where START-POSITION specifies the MSB, whereas MOST-SIGNIFICANT-BYTE-LAST maps to Intel Little-Endian (@1) where START-POSITION specifies the LSB."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/can/">CAN &amp; AUTOSAR</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/can/">CAN &amp; AUTOSAR Hub</a> <span>/</span>
+        <span>DBC Bit Numbering</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">DBC Bit Numbering</span>
+      </div>
+      <h1>Motorola Big-Endian (<code>@0</code> Sawtooth) vs. Intel Little-Endian (<code>@1</code>) CAN Bit Numbering</h1>
+      <p class="lead">The #1 cause of silent automotive ECU signal corruption is mixing <strong>Intel Little-Endian (<code>@1</code>)</strong> LSB start bits with <strong>Motorola Big-Endian (<code>@0</code>)</strong> MSB sawtooth bit numbering inside the same <code>64</code>-bit or <code>512</code>-bit CAN FD payload.</p>
+
+      <h2 id="grid-indexing">1. Standard CAN Byte &amp; Bit Grid Indexing (<code>0..63</code>)</h2>
+<p>Within every CAN payload byte <code>B</code> (<code>0..7</code> for Classic CAN, <code>0..63</code> for CAN FD), bits are numbered <code>0..7</code> from <strong>LSB (right)</strong> to <strong>MSB (left)</strong>: <code>flatBit = B * 8 + bitInByte</code>.</p>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Byte</th><th>b7 (MSB)</th><th>b6</th><th>b5</th><th>b4</th><th>b3</th><th>b2</th><th>b1</th><th>b0 (LSB)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Byte 0</strong></td><td><code>7</code></td><td><code>6</code></td><td><code>5</code></td><td><code>4</code></td><td><code>3</code></td><td><code>2</code></td><td><code>1</code></td><td><code>0</code></td></tr>
+      <tr><td><strong>Byte 1</strong></td><td><code>15</code></td><td><code>14</code></td><td><code>13</code></td><td><code>12</code></td><td><code>11</code></td><td><code>10</code></td><td><code>9</code></td><td><code>8</code></td></tr>
+      <tr><td><strong>Byte 2</strong></td><td><code>23</code></td><td><code>22</code></td><td><code>21</code></td><td><code>20</code></td><td><code>19</code></td><td><code>18</code></td><td><code>17</code></td><td><code>16</code></td></tr>
+    </tbody>
+  </table>
+</div>
+      <h2 id="sawtooth-step">2. Intel (<code>@1</code>) Contiguous Upward vs. Motorola (<code>@0</code>) Sawtooth Step</h2>
+<ul>
+  <li><strong>Intel Little-Endian (<code>start|len@1+</code>):</strong> <code>start</code> is the <strong>LSB</strong>; bits advance monotonically upward <code>start .. start + len - 1</code>. Example: <code>24|16@1+</code> occupies bits <code>24..39</code> (<code>Byte 3</code> LSB &rarr; <code>Byte 4</code> MSB).</li>
+  <li><strong>Motorola Big-Endian (<code>start|len@0-</code>):</strong> <code>start</code> is the <strong>MSB</strong>; each step moves toward bit <code>.0</code> of the current byte, then jumps <strong><code>+15</code></strong> to bit <code>.7</code> (MSB) of the <em>next</em> byte:</li>
+</ul>
+<pre><code>nextMotorolaBit(b) = (b % 8 == 0) ? (b + 15) : (b - 1)</code></pre>
+<div class="callout callout-warn">
+  <strong>Classic Firmware Bug: <code>15|16@0-</code> Colliding with <code>16|8@1+</code>!</strong>
+  A developer sees <code>SG_ RequestedTorque : 15|16@0-</code> and assumes it occupies bits <code>0..15</code> (Bytes <code>0..1</code>). In reality, starting at bit <code>15</code> (<code>Byte 1, b7</code>) steps down <code>15..8</code> (<code>Byte 1</code>), then jumps <code>+15</code> to bit <code>23..16</code> (<strong><code>Byte 2</code></strong>) &mdash; colliding head-on with <code>SG_ BrakePedalPct : 16|8@1+</code> on all 8 bits of <code>Byte 2</code>!
+</div>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/can/04-bit-overlap-and-dlc-validator.png" alt="Motorola Big-Endian (@0 Sawtooth) vs. Intel Little-Endian (@1) CAN Bit Numbering — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>How does AUTOSAR ARXML PACKING-BYTE-ORDER map to DBC @0 and @1?</summary><p>AUTOSAR MOST-SIGNIFICANT-BYTE-FIRST maps to Motorola Big-Endian (@0) where START-POSITION specifies the MSB, whereas MOST-SIGNIFICANT-BYTE-LAST maps to Intel Little-Endian (@1) where START-POSITION specifies the LSB.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Validate, Diff, Decode &amp; Scrub CAN / AUTOSAR Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste OEM NDA <code>.dbc</code> or <code>AUTOSAR .arxml</code> signal matrices into browser viewers. <strong>CanPrism DBC ARXML Viewer</strong> runs 100% air-gapped inside <strong>CLion, PyCharm, RustRover, IntelliJ IDEA, Rider, DataGrip, GoLand, and WebStorm</strong> with a forever-free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="/can/#install">Install CanPrism in JetBrains IDE &rarr;</a>
+          <a class="btn btn-outline" href="https://github.com/EdiPrism/canprism">GitHub Docs &amp; Issue Tracker</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#grid-indexing">1. Standard CAN Byte &amp; Bit Grid Indexing (0..63)</a></li>
+          <li><a href="#sawtooth-step">2. Intel (@1) Contiguous Upward vs. Motorola (@0) Sawtooth Step</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/can/">CanPrism Product Hub</a></li>
+          <li><a href="/can/sae-j1939-29-bit-can-id-to-pgn-decoding.html">SAE J1939 29-Bit PGN Decoding</a></li>
+          <li><a href="/can/autosar-arxml-to-dbc-and-c99-pack-unpack-codegen.html">AUTOSAR ARXML to DBC & C99 Codegen</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped CAN &amp; AUTOSAR Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Visualize 64-bit Motorola/Intel bit matrices, pinpoint bit overlaps, decode <code>candump</code>/<code>.asc</code> logs, and generate <code>C99</code> codecs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://github.com/EdiPrism/canprism">CanPrism Docs &amp; Issues</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/can/">CanPrism (CAN &amp; AUTOSAR)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="/cobol/">EbcdicPrism Copybook Viewer</a> &bull;
+        <a href="/can/">CanPrism DBC ARXML Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/canprism">CanPrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. AUTOSAR is a registered trademark of the AUTOSAR Development Partnership. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, CLion, RustRover, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism, EbcdicPrism, and CanPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, Vector Informatik GmbH, SAE International, AUTOSAR, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
