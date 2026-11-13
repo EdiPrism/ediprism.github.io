@@ -1,5 +1,11 @@
 https://ediprism.github.io/
 https://ediprism.github.io/changelog-and-roadmap.html
+https://ediprism.github.io/cobol/cobol-copybook-redefines-occurs-offsets.html
+https://ediprism.github.io/cobol/comp-3-packed-decimal-byte-length.html
+https://ediprism.github.io/cobol/ebcdic-codepages-ibm037-ibm1047-zoned-overpunch.html
+https://ediprism.github.io/cobol/fix-s0c7-data-exception-ebcdic.html
+https://ediprism.github.io/cobol/
+https://ediprism.github.io/cobol/pci-dss-binary-pan-luhn-scrubber.html
 https://ediprism.github.io/docs/
 https://ediprism.github.io/edifact/contrl-uci-ucf-ucm-ucs-syntax-acknowledgment.html
 https://ediprism.github.io/edifact/desadv-despatch-advice-cps-pac-lin.html

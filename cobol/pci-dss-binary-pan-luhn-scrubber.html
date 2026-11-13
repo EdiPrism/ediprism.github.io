@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline PCI-DSS PAN &amp; PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism</title>
+  <meta name="description" content="How to anonymize Primary Account Numbers (PANs), SSNs, and cardholder names directly inside binary .ebcdic mainframe files while preserving 6-digit BINs, ISO Luhn check digits, COMP-3 nibbles, and exact LRECL.">
+  <link rel="canonical" href="https://ediprism.github.io/cobol/pci-dss-binary-pan-luhn-scrubber.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="Offline PCI-DSS PAN &amp; PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism">
+  <meta property="og:description" content="How to anonymize Primary Account Numbers (PANs), SSNs, and cardholder names directly inside binary .ebcdic mainframe files while preserving 6-digit BINs, ISO Luhn check digits, COMP-3 nibbles, and exact LRECL.">
+  <meta property="og:url" content="https://ediprism.github.io/cobol/pci-dss-binary-pan-luhn-scrubber.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Offline PCI-DSS PAN &amp; PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism">
+  <meta name="twitter:description" content="How to anonymize Primary Account Numbers (PANs), SSNs, and cardholder names directly inside binary .ebcdic mainframe files while preserving 6-digit BINs, ISO Luhn check digits, COMP-3 nibbles, and exact LRECL.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Offline PCI-DSS PAN & PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism","description":"How to anonymize Primary Account Numbers (PANs), SSNs, and cardholder names directly inside binary .ebcdic mainframe files while preserving 6-digit BINs, ISO Luhn check digits, COMP-3 nibbles, and exact LRECL.","url":"https://ediprism.github.io/cobol/pci-dss-binary-pan-luhn-scrubber.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"COBOL & EBCDIC Hub","item":"https://ediprism.github.io/cobol/"},{"@type":"ListItem","position":3,"name":"Offline PCI-DSS PAN & PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism","item":"https://ediprism.github.io/cobol/pci-dss-binary-pan-luhn-scrubber.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Will the same production PAN scrub to the same synthetic PAN across two settlement files?","acceptedAnswer":{"@type":"Answer","text":"Yes. Using a shared local HMAC seed, identical input PANs map deterministically to identical Luhn-valid synthetic PANs across authorization, clearing, and chargeback files so join keys stay intact."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/x12-999-ik3-ik4-error-codes.html">999 Lookup</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/cobol/">COBOL &amp; EBCDIC Hub</a> <span>/</span>
+        <span>PCI-DSS Scrubbing</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">PCI-DSS Scrubbing</span>
+      </div>
+      <h1>Deterministic Offline PCI-DSS Card PAN &amp; PII Scrubbing for Binary <code>EBCDIC</code> Test Suites</h1>
+      <p class="lead">PCI-DSS Req. 6.5.3 strictly prohibits real Primary Account Numbers (PANs) in non-production dev/QA repositories &mdash; yet naive text masking corrupts fixed LRECL offsets, RDW headers, and downstream Luhn Mod-10 validators.</p>
+
+      <h2 id="in-place-binary">In-Place Binary Replacement Without Shifting a Single Byte</h2>
+<p><strong>EbcdicPrism Copybook Viewer</strong> (`Alt+Shift+R`) parses your `.cpy` layout locally, locates PAN, SSN, cardholder name, and address columns at their exact byte offsets (whether stored as `DISPLAY` Zoned EBCDIC or `COMP-3` Packed Decimal), and writes back deterministic `HmacSHA256` tokens of the <strong>exact same byte length</strong>:</p>
+<ul>
+  <li><strong>6-Digit Issuer BIN Preserved:</strong> Card-brand routing logic (`453201...` Visa, `542523...` Mastercard) keeps working in integration tests.</li>
+  <li><strong>ISO/IEC 7812 Luhn Mod-10 Recomputed:</strong> The final digit is mathematically recalculated so payment-gateway Luhn checks pass cleanly.</li>
+  <li><strong>Financial `COMP-3` &amp; `RDW` Bytes Untouched:</strong> Settlement totals and batch control hashes remain 100% balanced.</li>
+</ul>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/cobol/04-offline-pci-pan-scrubber-pro.png" alt="Offline PCI-DSS PAN &amp; PII Scrubbing Inside Binary EBCDIC Test Fixtures — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Will the same production PAN scrub to the same synthetic PAN across two settlement files?</summary><p>Yes. Using a shared local HMAC seed, identical input PANs map deterministically to identical Luhn-valid synthetic PANs across authorization, clearing, and chargeback files so join keys stay intact.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Diff, Validate &amp; Scrub This Payload Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never paste regulated healthcare PHI (<code>837</code>/<code>835</code>/<code>271</code>) or supply-chain payloads (<code>850</code>/<code>ORDERS</code>) into browser parsers. <strong>EdiPrism X12 EDIFACT</strong> runs 100% air-gapped inside <strong>IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm</strong> with a free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install Free from JetBrains Marketplace &rarr;</a>
+          <a class="btn btn-outline" href="/security-air-gap.html">Read Air-Gap Security Architecture</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#in-place-binary">In-Place Binary Replacement Without Shifting a Single Byte</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Safe Harbor EDI Scrubber</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/cobol/">EbcdicPrism Product Hub</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped IDE Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Repair <code>&lt;106</code>-byte <code>ISA</code> headers, inspect <code>HL</code> loop trees, run semantic <code>Ctrl+D</code> diffs, balance <code>CLM-02</code>/<code>BPR-02</code>, and scrub HIPAA NPIs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Open JetBrains Marketplace</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA (Java/Kotlin)</a></li>
+          <li><a href="/ide/pycharm-python-x12-edifact-pytest-fixtures.html">PyCharm (Python/pytest)</a></li>
+          <li><a href="/ide/datagrip-sql-835-837-era-warehouse-reconciliation.html">DataGrip (SQL/Snowflake)</a></li>
+          <li><a href="/ide/rider-dotnet-csharp-x12-hipaa-clearinghouse.html">Rider (.NET / C#)</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap &amp; HIPAA Security</a></li>
+          <li><a href="https://github.com/EdiPrism/ediprism/blob/main/PRIVACY.md">Privacy Policy &amp; EULA</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace (#35990)</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">Documentation &amp; Issue Tracker</a> &bull;
+        <a href="/changelog-and-roadmap.html">Release Notes &amp; Shortcuts</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism is an independent clean-room developer tool derived strictly from public-domain US Federal specifications (17 U.S.C. &sect; 105) and public UNECE directories, and is not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
