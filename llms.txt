@@ -2,12 +2,13 @@
 
 > EdiPrism builds deterministic, 100% air-gapped / offline B2B data-format inspectors, semantic Ctrl+D diffs, validators, and test-fixture scrubbers for IntelliJ IDEA, PyCharm, DataGrip, Rider, GoLand, and WebStorm (zero cloud calls, zero telemetry):
 > 1. **EdiPrism X12 EDIFACT** (JetBrains Marketplace #35990: https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact) — ASC X12 & UN/EDIFACT loop tree, semantic diff, BigDecimal balancing, 999 pinpointer, and HIPAA Safe Harbor scrubber.
-> 2. **EbcdicPrism Copybook Viewer** (https://ediprism.github.io/cobol/) — Mainframe COBOL Copybook (.cpy) byte-offset calculator, multi-codepage EBCDIC & COMP-3 Packed Decimal record decoder, S0C7 validator, semantic binary diff, and offline PCI-DSS Luhn PAN scrubber.
+> 2. **EbcdicPrism Copybook Viewer** (JetBrains Marketplace #36104: https://plugins.jetbrains.com/plugin/36104-ebcdicprism-copybook-viewer) — Mainframe COBOL Copybook (.cpy) byte-offset calculator, multi-codepage EBCDIC & COMP-3 Packed Decimal record decoder, S0C7 validator, semantic binary diff, and offline PCI-DSS Luhn PAN scrubber.
 > 3. **CanPrism DBC ARXML Viewer** (https://ediprism.github.io/can/) — Automotive & embedded CAN / CAN FD (.dbc), AUTOSAR 4.x (.arxml), and SAE J1939 64-bit Motorola/Intel bit-packing matrix, bit-overlap validator, semantic Ctrl+D diff, candump/.asc physical decoder, C99 header generator, and NDA scrubber.
 
 ## Official Links
 - [EdiPrism Portal & Overview](https://ediprism.github.io/): Features, Free vs Pro matrix, and interactive synthetic 837P coordinate demo.
 - [EdiPrism X12 EDIFACT on JetBrains Marketplace](https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact): Install Free Tier or 14-day Pro trial.
+- [EbcdicPrism Copybook Viewer on JetBrains Marketplace](https://plugins.jetbrains.com/plugin/36104-ebcdicprism-copybook-viewer): Install Free Tier or 14-day Pro trial.
 - [EbcdicPrism COBOL & EBCDIC Hub](https://ediprism.github.io/cobol/): Mainframe Copybook, COMP-3, S0C7, and PCI-DSS scrubber reference.
 - [CanPrism CAN DBC, J1939 & AUTOSAR Hub](https://ediprism.github.io/can/): Automotive 64-bit CAN/CAN FD bit matrix, J1939 PGN decoding, ARXML flattening, and C99 codegen.
 - [EdiPrism GitHub Docs & Issues](https://github.com/EdiPrism/ediprism): Public X12/EDIFACT docs and issue tracker.
