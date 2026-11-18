@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nasdaq TotalView-ITCH 5.0 &amp; MoldUDP64 48-Bit Timestamp &amp; Price4 Decoding — EdiPrism</title>
+  <meta name="description" content="Bitwise Big-Endian formulas for unpacking 20-byte MoldUDP64 multicast packets, Nasdaq ITCH 5.0 6-byte uint48 nanosecond midnight timestamps, and Price4 / OUCH Price8 fixed-point prices.">
+  <link rel="canonical" href="https://ediprism.github.io/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="Nasdaq TotalView-ITCH 5.0 &amp; MoldUDP64 48-Bit Timestamp &amp; Price4 Decoding — EdiPrism">
+  <meta property="og:description" content="Bitwise Big-Endian formulas for unpacking 20-byte MoldUDP64 multicast packets, Nasdaq ITCH 5.0 6-byte uint48 nanosecond midnight timestamps, and Price4 / OUCH Price8 fixed-point prices.">
+  <meta property="og:url" content="https://ediprism.github.io/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Nasdaq TotalView-ITCH 5.0 &amp; MoldUDP64 48-Bit Timestamp &amp; Price4 Decoding — EdiPrism">
+  <meta name="twitter:description" content="Bitwise Big-Endian formulas for unpacking 20-byte MoldUDP64 multicast packets, Nasdaq ITCH 5.0 6-byte uint48 nanosecond midnight timestamps, and Price4 / OUCH Price8 fixed-point prices.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"Nasdaq TotalView-ITCH 5.0 & MoldUDP64 48-Bit Timestamp & Price4 Decoding — EdiPrism","description":"Bitwise Big-Endian formulas for unpacking 20-byte MoldUDP64 multicast packets, Nasdaq ITCH 5.0 6-byte uint48 nanosecond midnight timestamps, and Price4 / OUCH Price8 fixed-point prices.","url":"https://ediprism.github.io/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"SBE & ITCH Hub","item":"https://ediprism.github.io/sbe/"},{"@type":"ListItem","position":3,"name":"Nasdaq TotalView-ITCH 5.0 & MoldUDP64 48-Bit Timestamp & Price4 Decoding — EdiPrism","item":"https://ediprism.github.io/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does SbePrism include ITCH 5.0 and OUCH 5.0 layouts out of the box without loading external XML?","acceptedAnswer":{"@type":"Answer","text":"Yes. Both clean-room Nasdaq TotalView-ITCH 5.0 (15 message types) and OUCH 5.0 (6 order-entry message types) catalogs are built directly into the Free Tier."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/can/">CAN &amp; AUTOSAR</a>
+        <a href="/sbe/">SBE &amp; ITCH</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/sbe/">SBE &amp; ITCH Hub</a> <span>/</span>
+        <span>ITCH 5.0 &amp; OUCH 5.0</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">ITCH 5.0 &amp; OUCH 5.0</span>
+      </div>
+      <h1>Decoding <code>Nasdaq TotalView-ITCH 5.0</code> &amp; <code>MoldUDP64</code> Binary Frames</h1>
+      <p class="lead">Equities order-book builders consume <strong>Nasdaq TotalView-ITCH 5.0</strong> in <strong>Big-Endian</strong> network byte order inside <code>MoldUDP64</code> multicast datagrams or 2-byte length-prefixed binary replay files.</p>
+
+      <h2 id="moldudp64">1. Unpacking the 20-Byte <code>MoldUDP64</code> Multicast Header</h2>
+<pre><code>// Bytes 0..9   : 10-char ASCII Session ID
+// Bytes 10..17 : uint64 BE First Message Sequence Number
+// Bytes 18..19 : uint16 BE Message Block Count (0 = Heartbeat, 0xFFFF = End of Session)
+// Bytes 20+    : Repeating [uint16 BE msgLen][ITCH payload of msgLen bytes]</code></pre>
+      <h2 id="uint48-ts">2. Converting 6-Byte <code>uint48</code> Midnight Nanoseconds to <code>HH:MM:SS.nnnnnnnnn</code></h2>
+<p>In every ITCH 5.0 frame (<code>'S'</code>, <code>'R'</code>, <code>'A'</code> 36B, <code>'F'</code> 40B, <code>'E'</code> 31B, <code>'P'</code> 44B), wire bytes <code>B5..B10</code> store unsigned nanoseconds since midnight:</p>
+<pre><code>uint64_t ns = ((uint64_t)b[5] &lt;&lt; 40) | ((uint64_t)b[6] &lt;&lt; 32) |
+              ((uint64_t)b[7] &lt;&lt; 24) | ((uint64_t)b[8] &lt;&lt; 16) |
+              ((uint64_t)b[9] &lt;&lt; 8)  |  (uint64_t)b[10];
+// 34,200,250,000,000 ns  --&gt;  09:30:00.250000000</code></pre>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/sbe/02-nasdaq-itch50-and-ouch50-wire-catalog.png" alt="Nasdaq TotalView-ITCH 5.0 &amp; MoldUDP64 48-Bit Timestamp &amp; Price4 Decoding — EdiPrism inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Does SbePrism include ITCH 5.0 and OUCH 5.0 layouts out of the box without loading external XML?</summary><p>Yes. Both clean-room Nasdaq TotalView-ITCH 5.0 (15 message types) and OUCH 5.0 (6 order-entry message types) catalogs are built directly into the Free Tier.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Validate, Diff, Decode &amp; Scrub FIX SBE / ITCH / PCAP Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never upload production <code>.pcap</code> captures, <code>ClOrdID</code>s, or proprietary <code>&lt;sbe:messageSchema&gt;</code> XML files into web parsers. <strong>SbePrism SBE ITCH Viewer</strong> runs 100% air-gapped inside <strong>CLion, RustRover, IntelliJ IDEA, Rider, PyCharm, DataGrip, GoLand, and WebStorm</strong> with a forever-free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="/sbe/#install">Install SbePrism in JetBrains IDE &rarr;</a>
+          <a class="btn btn-outline" href="https://github.com/EdiPrism/sbeprism">GitHub Docs &amp; Issue Tracker</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#moldudp64">1. Unpacking the 20-Byte MoldUDP64 Multicast Header</a></li>
+          <li><a href="#uint48-ts">2. Converting 6-Byte uint48 Midnight Nanoseconds to HH:MM:SS.nnnnnnnnn</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/sbe/">SbePrism Product Hub</a></li>
+          <li><a href="/sbe/fix-sbe-wire-byte-offset-blocklength-alignment-guide.html">FIX SBE Offset & Evolution Guide</a></li>
+          <li><a href="/sbe/cme-mdp-30-binary-packet-sbe-pcap-decoding.html">CME MDP 3.0 & Nanosecond PCAP Decoding</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped Quant Wire Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Inspect SBE byte offsets, 64-bit word matrices, nanosecond <code>.pcap</code> &amp; <code>ITCH 5.0</code> frames, and generate zero-copy <code>C++20</code>/<code>Rust</code> codecs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://github.com/EdiPrism/sbeprism">SbePrism Docs &amp; Issues</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/can/">CanPrism (CAN &amp; AUTOSAR)</a></li>
+          <li><a href="/sbe/">SbePrism (FIX SBE &amp; ITCH)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/36104-ebcdicprism-copybook-viewer">EbcdicPrism (#36104)</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/36115-canprism-dbc-arxml-viewer">CanPrism (#36115)</a> &bull;
+        <a href="/sbe/">SbePrism SBE ITCH Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/canprism">CanPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/sbeprism">SbePrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. AUTOSAR is a registered trademark of the AUTOSAR Development Partnership. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, CLion, RustRover, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism, EbcdicPrism, and CanPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, Vector Informatik GmbH, SAE International, AUTOSAR, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>

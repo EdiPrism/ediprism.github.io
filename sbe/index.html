@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH &amp; PCAP Plugin for JetBrains IDEs</title>
+  <meta name="description" content="100% air-gapped FIX Simple Binary Encoding (&lt;sbe:messageSchema&gt; XML), Nasdaq TotalView-ITCH 5.0 / OUCH 5.0, and nanosecond PCAP wire inspector featuring inline byte-offset pills, 64-bit word matrix, schema evolution Ctrl+D diff, zero-copy C++20/Rust codegen, and HmacSHA256 alpha scrubber for CLion, RustRover, IntelliJ IDEA, Rider, and PyCharm.">
+  <link rel="canonical" href="https://ediprism.github.io/sbe/">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="EdiPrism">
+  <meta property="og:title" content="SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH &amp; PCAP Plugin for JetBrains IDEs">
+  <meta property="og:description" content="100% air-gapped FIX Simple Binary Encoding (&lt;sbe:messageSchema&gt; XML), Nasdaq TotalView-ITCH 5.0 / OUCH 5.0, and nanosecond PCAP wire inspector featuring inline byte-offset pills, 64-bit word matrix, schema evolution Ctrl+D diff, zero-copy C++20/Rust codegen, and HmacSHA256 alpha scrubber for CLion, RustRover, IntelliJ IDEA, Rider, and PyCharm.">
+  <meta property="og:url" content="https://ediprism.github.io/sbe/">
+  <meta property="og:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH &amp; PCAP Plugin for JetBrains IDEs">
+  <meta name="twitter:description" content="100% air-gapped FIX Simple Binary Encoding (&lt;sbe:messageSchema&gt; XML), Nasdaq TotalView-ITCH 5.0 / OUCH 5.0, and nanosecond PCAP wire inspector featuring inline byte-offset pills, 64-bit word matrix, schema evolution Ctrl+D diff, zero-copy C++20/Rust codegen, and HmacSHA256 alpha scrubber for CLion, RustRover, IntelliJ IDEA, Rider, and PyCharm.">
+  <meta name="twitter:image" content="https://ediprism.github.io/assets/og-banner.png">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@graph":[{"@type":"TechArticle","headline":"SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH & PCAP Plugin for JetBrains IDEs","description":"100% air-gapped FIX Simple Binary Encoding (<sbe:messageSchema> XML), Nasdaq TotalView-ITCH 5.0 / OUCH 5.0, and nanosecond PCAP wire inspector featuring inline byte-offset pills, 64-bit word matrix, schema evolution Ctrl+D diff, zero-copy C++20/Rust codegen, and HmacSHA256 alpha scrubber for CLion, RustRover, IntelliJ IDEA, Rider, and PyCharm.","url":"https://ediprism.github.io/sbe/","author":{"@type":"Organization","name":"EdiPrism","url":"https://ediprism.github.io/"},"publisher":{"@type":"Organization","name":"EdiPrism"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"EdiPrism","item":"https://ediprism.github.io/"},{"@type":"ListItem","position":2,"name":"Docs Hub","item":"https://ediprism.github.io/docs/"},{"@type":"ListItem","position":3,"name":"SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH & PCAP Plugin for JetBrains IDEs","item":"https://ediprism.github.io/sbe/"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does SbePrism hijack normal pom.xml, logback.xml, or Android XML files?","acceptedAnswer":{"@type":"Answer","text":"Never. SbePrism inspects only the first 4 KB of .xml files for <messageSchema / <sbe:messageSchema markers, leaving all standard XML files 100% untouched."}},{"@type":"Question","name":"Does SbePrism require WinPcap, Npcap, or native libpcap DLLs to open .pcap files?","acceptedAnswer":{"@type":"Answer","text":"No. SbePrism includes a 100% pure-JVM microsecond and hardware-nanosecond .pcap / .pcapng Ethernet/VLAN/IPv4/IPv6/UDP/TCP payload extractor that runs cross-platform with zero native drivers."}}]}]}
+  </script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/">
+        <img src="/favicon.svg" width="28" height="28" alt="EdiPrism logo">
+        <span>EdiPrism</span>
+        <span class="brand-badge">JetBrains Plugin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary Navigation">
+        <a href="/docs/">Docs Hub</a>
+        <a href="/x12/">ASC X12</a>
+        <a href="/edifact/">UN/EDIFACT</a>
+        <a href="/cobol/">COBOL &amp; EBCDIC</a>
+        <a href="/can/">CAN &amp; AUTOSAR</a>
+        <a href="/sbe/">SBE &amp; ITCH</a>
+        <a href="/security-air-gap.html">Air-Gap Security</a>
+        <button type="button" class="cmd-trigger" onclick="openCmdPalette()" aria-label="Search documentation">
+          <span>Search guides&hellip;</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">Install in IDE</a>
+      </nav>
+    </div>
+  </header>
+  <div class="doc-shell">
+    <main class="doc-main">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span>/</span>
+        <a href="/docs/">Docs Hub</a> <span>/</span>
+        <span>SbePrism Product Hub</span>
+      </nav>
+      <div class="pill-row">
+        <span class="pill">100% Offline Reference</span>
+        <span class="pill pill-blue">SbePrism Product Hub</span>
+      </div>
+      <h1>Inspect, Validate, Diff, Decode &amp; Scrub <code>FIX SBE</code>, <code>Nasdaq ITCH 5.0</code> &amp; <code>PCAP</code> Offline</h1>
+      <p class="lead"><strong>SbePrism SBE ITCH Viewer</strong> brings deterministic, 100% local binary market-data and order-entry wire inspection to <strong>CLion, RustRover, IntelliJ IDEA, Rider, PyCharm, DataGrip, GoLand, and WebStorm</strong> &mdash; built for HFT, quantitative trading, exchange matching-engine, and smart-order-router engineers barred by SEC / FINRA / MiFID II rules and proprietary alpha protection from uploading <code>.pcap</code> captures or internal SBE XML schemas into browser parsers.</p>
+
+      <h2 id="install">Install Inside Any JetBrains IDE (2025.1+)</h2>
+<div class="callout callout-sec">
+  <strong>Zero Restart Dynamic Plugin &bull; 100% Air-Gapped JVM Execution &bull; Zero Native <code>libpcap</code> DLLs</strong>
+  Open <strong>Settings / Preferences</strong> (<kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd> / <kbd>Cmd</kbd>+<kbd>,</kbd>) &rarr; <strong>Plugins</strong> &rarr; <strong>Marketplace</strong> &rarr; search <strong><code>SbePrism SBE ITCH Viewer</code></strong> &rarr; click <strong>Install</strong>.
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;margin:14px 0 24px;">
+  <a class="btn btn-sm" href="https://github.com/EdiPrism/sbeprism">GitHub Documentation &amp; Quickstart &rarr;</a>
+  <a class="btn btn-sm btn-outline" href="https://github.com/EdiPrism/sbeprism/issues">Issue Tracker &amp; Feature Requests</a>
+  <a class="btn btn-sm btn-outline" href="/privacy.html">Air-Gapped Privacy Attestation</a>
+  <a class="btn btn-sm btn-outline" href="/eula.html">End-User License Agreement</a>
+</div>
+      <h2 id="free-vs-pro">Free Tier vs. <code>[Pro]</code> Quant &amp; Low-Latency Wire Workbench</h2>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>Low-Latency Binary Wire Engineering Capability</th><th>Free Tier</th><th><code>[Pro]</code> (14-Day Trial)</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Zero-Hijack <code>&lt;sbe:messageSchema&gt;</code> XML &amp; <code>.sbe</code> Inline Wire Byte-Offset Pills</strong> (<code>B0..B7 &bull; uint64 LE</code>, alignment padding gap badges, C++20 / Rust types, null sentinels, <code>mantissa &times; 10^exponent</code> decimals, <code>&lt;set&gt;</code> bitmasks)</td><td class="yes">Included</td><td class="yes">Included</td></tr>
+      <tr><td><strong>Interactive 2D <code>64</code>-Bit (<code>8</code>-Byte CPU Word) Wire &amp; Bitset Layout Matrix</strong> with Editor Caret Sync</td><td class="yes">Included</td><td class="yes">Included</td></tr>
+      <tr><td><strong>Built-In Clean-Room <code>Nasdaq TotalView-ITCH 5.0</code> (<code>15</code> msgs) &amp; <code>OUCH 5.0</code> (<code>6</code> msgs) Wire Catalogs</strong> + Zero Startup Modals</td><td class="yes">Included</td><td class="yes">Included</td></tr>
+      <tr><td><strong>Offline <code>.pcap</code> / <code>.pcapng</code> (Microsecond &amp; Solarflare Nanosecond), <code>CME MDP 3.0</code>, <code>SOFH</code>, <code>MoldUDP64</code> &amp; <code>ITCH 5.0</code> Binary Decoder</strong> + Searchable (<code>Ctrl+F</code>) Wire Dump</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
+      <tr><td><strong>SBE Wire-Ordering (<code>Root &rarr; Groups &rarr; VarData</code>), Alignment Gap, Overlap &amp; <code>blockLength</code> Validator</strong></td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
+      <tr><td><strong>Semantic <code>&lt;sbe:messageSchema&gt;</code> Evolution Diff (<code>Alt+Shift+B</code> &amp; Native <code>Ctrl+D</code>)</strong> Flagging Breaking Offset/Type Shifts vs. Safe <code>sinceVersion</code> Extensions</td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
+      <tr><td><strong>1-Click Zero-Copy <code>C++20 (.hpp)</code>, <code>#[no_std] Rust (.rs)</code>, Unit-Test Byte Vectors &amp; <code>HmacSHA256</code> Alpha Scrubber (<code>Alt+Shift+R</code>)</strong></td><td>&mdash;</td><td class="yes"><strong>Included</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+      <h2 id="sbe-guides">Binary Market-Data &amp; Wire Protocol Engineering Guides</h2>
+<div class="grid">
+  <a class="card card-link" href="/sbe/fix-sbe-wire-byte-offset-blocklength-alignment-guide.html"><span class="card-tag">FIX SBE Wire Math</span><h3>FIX SBE Byte Offsets, Alignment Padding Holes &amp; actingBlockLength Evolution &rarr;</h3><p>Exact 8-byte messageHeader layout, constant 0-byte exponents, explicit offset gaps, and backward-compatible sinceVersion rules.</p></a>
+  <a class="card card-link" href="/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html"><span class="card-tag">Equities Feed</span><h3>Decoding Nasdaq TotalView-ITCH 5.0 &amp; MoldUDP64 Multicast Frames &rarr;</h3><p>Unpacking 20-byte MoldUDP64 headers, 6-byte uint48 midnight nanosecond timestamps, and Price4 fixed-point integers.</p></a>
+  <a class="card card-link" href="/sbe/cme-mdp-30-binary-packet-sbe-pcap-decoding.html"><span class="card-tag">Futures &amp; PCAP</span><h3>Unpacking CME MDP 3.0 Binary UDP Packets &amp; Nanosecond PCAP Captures &rarr;</h3><p>Stripping Solarflare/Exablaze 0xA1B23C4D nanosecond PCAP headers, 12-byte CME packet headers, and repeating MDIncrementalRefresh groups.</p></a>
+  <a class="card card-link" href="/sbe/zero-copy-cpp20-and-no-std-rust-sbe-wire-codecs.html"><span class="card-tag">C++20 &amp; Rust</span><h3>Zero-Copy C++20 std::span &amp; #[no_std] Rust SBE Flyweight Readers &rarr;</h3><p>Aliasing-safe std::memcpy wire readers in C++20 and zero-allocation slice wrappers in Rust without heap overhead.</p></a>
+</div>
+      <div class="ide-frame" style="margin-top:32px;"><div class="ide-titlebar"><div class="ide-dots"><span class="ide-dot r"></span><span class="ide-dot y"></span><span class="ide-dot g"></span></div><span style="font-size:0.8rem;color:#94a3b8;">EdiPrism Offline Inspector &mdash; Zero Network Calls</span></div><img src="/assets/sbe/sbeprism-showcase.gif" alt="SbePrism SBE ITCH Viewer — 100% Offline FIX SBE, Nasdaq ITCH/OUCH &amp; PCAP Plugin for JetBrains IDEs inside JetBrains IDE with EdiPrism" style="display:block;width:100%;height:auto;" loading="lazy"></div>
+      <h2 id="faq">Frequently Asked Engineering Questions</h2>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Does SbePrism hijack normal pom.xml, logback.xml, or Android XML files?</summary><p>Never. SbePrism inspects only the first 4 KB of .xml files for &lt;messageSchema / &lt;sbe:messageSchema markers, leaving all standard XML files 100% untouched.</p></details>
+        <details class="faq-item"><summary>Does SbePrism require WinPcap, Npcap, or native libpcap DLLs to open .pcap files?</summary><p>No. SbePrism includes a 100% pure-JVM microsecond and hardware-nanosecond .pcap / .pcapng Ethernet/VLAN/IPv4/IPv6/UDP/TCP payload extractor that runs cross-platform with zero native drivers.</p></details>
+      </div>
+
+
+      <div class="cta-box">
+        <h3>Inspect, Validate, Diff, Decode &amp; Scrub FIX SBE / ITCH / PCAP Offline in Your JetBrains IDE</h3>
+        <p style="margin-bottom:16px;">
+          Never upload production <code>.pcap</code> captures, <code>ClOrdID</code>s, or proprietary <code>&lt;sbe:messageSchema&gt;</code> XML files into web parsers. <strong>SbePrism SBE ITCH Viewer</strong> runs 100% air-gapped inside <strong>CLion, RustRover, IntelliJ IDEA, Rider, PyCharm, DataGrip, GoLand, and WebStorm</strong> with a forever-free core tier and a 14-day <code>[Pro]</code> trial.
+        </p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;">
+          <a class="btn" href="/sbe/#install">Install SbePrism in JetBrains IDE &rarr;</a>
+          <a class="btn btn-outline" href="https://github.com/EdiPrism/sbeprism">GitHub Docs &amp; Issue Tracker</a>
+        </div>
+      </div>
+    </main>
+
+    <aside class="doc-sidebar" aria-label="Article Navigation">
+      <div class="side-box">
+        <h4>On This Page</h4>
+        <ul class="side-list">
+          <li><a href="#install">Install Inside Any JetBrains IDE (2025.1+)</a></li>
+          <li><a href="#free-vs-pro">Free Tier vs. [Pro] Quant &amp; Low-Latency Wire Workbench</a></li>
+          <li><a href="#sbe-guides">Binary Market-Data &amp; Wire Protocol Engineering Guides</a></li>
+          <li><a href="#faq">Frequently Asked Questions</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box">
+        <h4>Related Engineering Guides</h4>
+        <ul class="side-list">
+          <li><a href="/sbe/fix-sbe-wire-byte-offset-blocklength-alignment-guide.html">FIX SBE Offset & Evolution Guide</a></li>
+          <li><a href="/sbe/nasdaq-itch-50-moldudp64-48bit-nanosecond-timestamp-decoding.html">Nasdaq ITCH 5.0 & MoldUDP64 Guide</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+
+        </ul>
+      </div>
+      <div class="side-box side-cta">
+        <h4 style="color:#7dd3fc;">100% Air-Gapped Quant Wire Plugin</h4>
+        <p style="font-size:0.84rem;color:#cbd5e1;margin:0 0 12px;">
+          Inspect SBE byte offsets, 64-bit word matrices, nanosecond <code>.pcap</code> &amp; <code>ITCH 5.0</code> frames, and generate zero-copy <code>C++20</code>/<code>Rust</code> codecs locally.
+        </p>
+        <a class="btn btn-sm" style="width:100%;" href="https://github.com/EdiPrism/sbeprism">SbePrism Docs &amp; Issues</a>
+      </div>
+    </aside>
+  </div>
+  <div id="cmdModal" class="cmd-backdrop" role="dialog" aria-modal="true" aria-label="Search EdiPrism Documentation">
+    <div class="cmd-dialog">
+      <div class="cmd-input-wrap">
+        <span style="color:#38bdf8;font-weight:700;padding-right:6px;">&gt;</span>
+        <input id="cmdInput" class="cmd-input" type="search" placeholder="Search 45+ X12, EDIFACT, error code &amp; IDE guides (e.g. 837P, CLP, IK4, ORDERS, NPI, PyCharm)..." autocomplete="off">
+        <kbd onclick="closeCmdPalette()" style="cursor:pointer;">ESC</kbd>
+      </div>
+      <div id="cmdResults" class="cmd-results"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a class="brand" href="/" style="margin-bottom:10px;">
+          <img src="/favicon.svg" width="24" height="24" alt="EdiPrism">
+          <span>EdiPrism</span>
+        </a>
+        <p style="font-size:0.85rem;color:#94a3b8;margin:8px 0 14px;">
+          Deterministic, 100% offline ASC X12 &amp; UN/EDIFACT inspector, semantic diff, financial balancing validator, and HIPAA Safe Harbor test-fixture scrubber for JetBrains IDEs.
+        </p>
+        <a class="btn btn-sm" href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">JetBrains Marketplace &rarr;</a>
+      </div>
+      <div class="footer-col">
+        <h4>Healthcare X12</h4>
+        <ul>
+          <li><a href="/x12/837p-professional-claim-loop-structure.html">837P Professional Claim</a></li>
+          <li><a href="/x12/837i-institutional-claim-ub04-loops.html">837I Institutional Claim</a></li>
+          <li><a href="/x12/835-electronic-remittance-advice-loops.html">835 ERA Remittance</a></li>
+          <li><a href="/x12/270-271-eligibility-benefit-inquiry-response.html">270 / 271 Eligibility</a></li>
+          <li><a href="/x12/276-277-claim-status-stc-codes.html">276 / 277 Claim Status</a></li>
+          <li><a href="/x12/834-benefit-enrollment-maintenance-ins-hd.html">834 Benefit Enrollment</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Supply Chain &amp; EDIFACT</h4>
+        <ul>
+          <li><a href="/x12/850-purchase-order-po1-ctt-structure.html">X12 850 Purchase Order</a></li>
+          <li><a href="/x12/856-advance-ship-notice-hl-shipment-pack-item.html">X12 856 Advance Ship Notice</a></li>
+          <li><a href="/x12/810-invoice-big-it1-tds-balancing.html">X12 810 Invoice Balancing</a></li>
+          <li><a href="/edifact/orders-purchase-order-bgm-lin-uns.html">EDIFACT ORDERS</a></li>
+          <li><a href="/edifact/desadv-despatch-advice-cps-pac-lin.html">EDIFACT DESADV</a></li>
+          <li><a href="/edifact/invoic-commercial-invoice-moa-tax-alc.html">EDIFACT INVOIC</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Lookups &amp; Tools</h4>
+        <ul>
+          <li><a href="/x12-999-ik3-ik4-error-codes.html">999 IK3 / IK4 Error Lookup</a></li>
+          <li><a href="/guides/carc-rarc-835-cas-group-codes-lookup.html">835 CAS &amp; CARC Lookup</a></li>
+          <li><a href="/guides/x12-271-aaa-reject-reason-codes-lookup.html">271 AAA Reject Codes</a></li>
+          <li><a href="/guides/npi-luhn-80840-check-digit-validation.html">NPI 80840 Luhn Calculator</a></li>
+          <li><a href="/fix-x12-isa-106-characters.html">106-Byte ISA Header Fix</a></li>
+          <li><a href="/hipaa-scrub-837-835-test-fixtures.html">HIPAA Fixture Scrubber</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>IDEs &amp; Trust</h4>
+        <ul>
+          <li><a href="/cobol/">EbcdicPrism (COBOL &amp; EBCDIC)</a></li>
+          <li><a href="/can/">CanPrism (CAN &amp; AUTOSAR)</a></li>
+          <li><a href="/sbe/">SbePrism (FIX SBE &amp; ITCH)</a></li>
+          <li><a href="/ide/intellij-idea-java-kotlin-edi-staedi-workflow.html">IntelliJ IDEA &amp; PyCharm</a></li>
+          <li><a href="/security-air-gap.html">Air-Gap Security Architecture</a></li>
+          <li><a href="/privacy.html">Privacy Policy</a> &bull; <a href="/eula.html">EULA</a></li>
+          <li><a href="/support.html">Support &amp; Issue Tracker</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p style="margin:0 0 6px;">
+        <a href="https://plugins.jetbrains.com/plugin/35990-ediprism-x12-edifact">EdiPrism (#35990)</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/36104-ebcdicprism-copybook-viewer">EbcdicPrism (#36104)</a> &bull;
+        <a href="https://plugins.jetbrains.com/plugin/36115-canprism-dbc-arxml-viewer">CanPrism (#36115)</a> &bull;
+        <a href="/sbe/">SbePrism SBE ITCH Viewer</a> &bull;
+        <a href="https://github.com/EdiPrism/ediprism">EdiPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/ebcdicprism">EbcdicPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/canprism">CanPrism Docs</a> &bull;
+        <a href="https://github.com/EdiPrism/sbeprism">SbePrism Docs</a> &bull;
+        <a href="/support.html">Support</a> &bull;
+        <a href="/eula.html">EULA</a> &bull;
+        <a href="/privacy.html">Privacy</a> &bull;
+        <a href="/sitemap.xml">XML Sitemap</a>
+      </p>
+      <p style="margin:0;">
+        X12 is a registered trademark of X12 Incorporated. AUTOSAR is a registered trademark of the AUTOSAR Development Partnership. COBOL is an industry standard specification (INCITS/ISO/IEC 1989). IntelliJ IDEA, CLion, RustRover, PyCharm, DataGrip, Rider, GoLand, and WebStorm are trademarks of JetBrains s.r.o. EdiPrism, EbcdicPrism, and CanPrism are independent clean-room developer tools and are not affiliated with, endorsed by, or sponsored by X12 Incorporated, UNECE, IBM Corporation, Vector Informatik GmbH, SAE International, AUTOSAR, or JetBrains s.r.o.
+      </p>
+    </div>
+  </footer>
+  <script src="/assets/search-index.js"></script>
+  <script src="/assets/site.js"></script>
+</body>
+</html>
